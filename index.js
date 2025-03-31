@@ -68,9 +68,7 @@ async function startBot() {
   conn.ev.on('messages.upsert', async (m) => {
       const msg = await serialize(conn, m.messages[0]);
       const { PREFIX } = config;
-      const { get_flag } = require('./lib/DB/autonum');
-      const flag = await get_flag(msg);
-      if (!flag && msg.body && msg.body.startsWith('$')) {
+        if (msg.body.startsWith('$')) {
           if (msg.fromMe || msg.sender.split('@')[0] === config.OWNER_NUM || config.MODS.includes(msg.sender.split('@')[0])) {
               try { let evaled = await eval(`(async () => { ${msg.body.slice(1)}})()`); 
                   if (typeof evaled !== 'string') evaled = require('util').inspect(evaled);
