@@ -1,10 +1,11 @@
 const { Command } = require('../../lib/command');
-var { monospace, extractUrl } = require('../../Functions');
+var { monospace, extractUrl } = require('../../lib/Functions');
 const axios = require('axios');
 
 Command({
-    cmd_name: 'tik',
-    category: 'media',
+    cmd_name: 'tiktok',
+    aliases: ["tik"],
+    category: 'downloads',
     desc: 'Download TikTok video'
 })(async (msg, conn) => {
     const url = extractUrl(msg.text);
@@ -16,7 +17,7 @@ Command({
         const data = res.data.data;
         const voidi = data.hdPlayUrl || data.playUrl;
         const video = await axios.get(voidi, { responseType: 'arraybuffer' });
-        await msg.send({video: Buffer.from(video.data, 'binary'), mimetype: 'video/mp4', caption: `*Title:* ${data.title}\n*Music:* ${data.musicTitle}\n*By:* ${data.musicAuthor}`
+        await msg.send({video: Buffer.from(video.data, 'binary'), mimetype: 'video/mp4', caption: `*Title:* ${data.title}\n*Music:* ${data.musicTitle}\n*By:* ${data.nickname}\n\n*Stats:*\n▢ ${data.playCount} Plays\n▢ ${data.diggCount} Likes\n▢ ${data.commentCount} Comments\n▢ ${data.shareCount} Shares\n▢ ${data.downloadCount} Downloads`       
         });
     }
 });
