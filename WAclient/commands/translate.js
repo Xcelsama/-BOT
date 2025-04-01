@@ -14,7 +14,7 @@ Command({
     }
     
     if (!txt) return msg.reply('Please provide text and language code\nExample: .trt Hello world|en\nOr reply to a msg');
-    const [query, lang = 'en'] = textToTranslate.split('|').map(item => item.trim());
+    const [query, lang = 'en'] = txt.split('|').map(item => item.trim());
     if (!query) return msg.reply('Please provide text to translate');
     const { data } = await axios.get(`https://diegoson-naxordeve.hf.space/translate?query=${query}&lang=${lang}`);
     if (data?.translatedText) {
