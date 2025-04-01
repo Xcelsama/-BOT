@@ -1,35 +1,26 @@
 const axios = require('axios');
 const ID3 = require('node-id3');
 
-async function streamer(stream) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on('data', (chunk) => chunks.push(chunk));
-    stream.on('end', () => resolve(Buffer.concat(chunks)));
-    stream.on('error', reject);
-  });
+async function toBuffer(stream) {
+  let chunks = [];
+  for await (let chunk of stream) chunks.push(chunk);
+  return Buffer.concat(chunks);
 }
 
-async function AddMp3Metadata(audioUrl, thumbnailUrl, { title, artist = 'Diegoson', album = 'X Astal' }) {
-  const [audioStream, thumbnailBuffer] = await Promise.all([
-  axios({ url: audioUrl, method: 'GET', responseType: 'stream' }).then(res => streamer(res.data)), 
-  axios({ url: thumbnailUrl, method: 'GET', responseType: 'arraybuffer' }).then(res => res.data),
+async function AddMetadata(audio_url, img_url, { title, artist = 'Diegoson', album = 'X Astral' }) {
+  const [audio, cover] = await Promise.all([
+    axios({ url: audio_url, responseType: 'stream' }).then(res => toBuffer(res.data)),
+    axios({ url: img_url, responseType: 'arraybuffer' }).then(res => res.data),
   ]);
 
-  const metadata = {
+  const tags = {
     title,
     artist,
     album,
-    APIC: {
-      mime: 'image/jpeg',
-      type: 3,
-      description: 'Cover',
-      imageBuffer: thumbnailBuffer,
-    },
+    APIC: { mime: 'image/jpeg', type: 3, description: 'Cover', imageBuffer: cover },
   };
 
-  const meme = ID3.write(metadata, audioStream); 
-  return meme;
+  return ID3.write(tags, audio); 
 }
 
-module.exports = {AddMp3Metadata};
+module.exports =  { AddMetadata };
