@@ -3,6 +3,24 @@ var { monospace, extractUrl } = require('../../lib/Functions');
 const axios = require('axios');
 
 Command({
+  cmd_name: 'gitclone',
+  aliases: ['git'],
+  category: 'downloader',
+  desc: 'Download git repo'
+})(async (msg) => {
+    const me = /(?:https?:\/\/|git@)github\.com[\/:]([^\/\s]+)\/([^\/\s]+)(?:\.git)?/;
+    const eg = me.exec(msg.text);
+    if (!eg) return msg.reply('_Provide git repo_');
+    const [_, username, repo] = eg;
+    const api = `https://api.github.com/repos/${username}/${repo.replace(/\.git$/, "")}`;
+    const res = await axios.get(api).catch(() => null);
+    if (!res || res.status !== 200) return;
+    const { name, stargazers_count, forks_count } = res.data;
+    const caption = `**Name:** ${name}\n**Forks:** ${forks_count}\n\n*X ASTRAL*`;
+    await msg.send({document: { url: `${api}/zipball` }, caption, fileName: `${repo}.zip`, mimetype: "application/zip"});
+  });
+        
+Command({
     cmd_name: 'tiktok',
     aliases: ["tik"],
     category: 'downloads',
