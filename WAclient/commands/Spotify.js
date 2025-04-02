@@ -8,10 +8,10 @@ Command({
   category: 'search',
   desc: 'Search for songs on Spotify'
 })(async (msg) => {
-  if (!msg.text) return msg.reply('Provide a song name to search.');
-  let { data } = await axios.get(`${config.API}/Spotify/search?query=${msg.text}&limit=10`);
+  if (!msg.text) return msg.reply('_Provide a song name to search_');
+  let { data } = await axios.get(`${config.API}/Spotify/search?query=${msg.text}&limit=12`);
   if (!data || !data.length) return;
-  let results = data.map((song, i) => `${i + 1}. *${song.title}*\n*▢Artist*${song.artist}\n▢${song.duration}\n▢[Spotify](${song.url})`).join('\n\n');
+  let results = data.map((song, i) => `*${i + 1}${song.title}*\n*▢Artist:*${song.artist}\n*▢${song.duration}*\n*▢[Spotify]*\n${song.url}`).join('\n\n');
   await msg.reply(`*Spotify Search:*\n\n${results}`);
 });
 
@@ -23,7 +23,7 @@ Command({
   category: 'downloader',
   desc: 'Download songs from Spotify'
 })(async (msg) => {
-  if (!msg.text) return msg.reply('Provide a valid Spotify track url');
+  if (!msg.text) return msg.reply('_Provide a valid Spotify track url_');
   let { data } = await axios.get(`${config.API}/Spotify/download?url=${msg.text}`);
   if (!data || !data.download) return;
   let caption = `*Title:* ${data.title}\n*Duration:* ${(data.duration / 1000).toFixed(0)} seconds`;
