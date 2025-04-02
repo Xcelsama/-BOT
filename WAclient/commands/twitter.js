@@ -1,5 +1,6 @@
 var { Command } = require('../../lib/command');
 var {getTwitterVideo} = require('./Func/twitter.js');
+let {extractUrl} = require('../../lib/Functions');
 
 Command({
     cmd_name: 'twitter',
