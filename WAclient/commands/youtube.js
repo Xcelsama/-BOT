@@ -1,6 +1,28 @@
 const { Command } = require('../../lib/command');
+var { getYouTubeMP3} = require('./Func/yt.js');
 const {AddMetadata} = require('./Func/Mp3Data');
 const axios = require('axios');
+
+Command({
+    cmd_name: 'ytmp3',
+    aliases: ['y2mate', 'yta'],
+    category: 'downloader',
+    desc: 'Download YouTube audio'
+})(async (msg) => {
+    var url = extractUrl(msg.text);
+    if (!url && msg.quoted) {
+        url = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
+    }
+    if (!url) return msg.reply('*_Please provide a YouTube URL_*');
+    const data = await getYouTubeMP3(url);
+    if (!data) return;
+    const buffer = await AddMetadata(data.downloadUrl, data.thumbnail, { title: data.title });
+    await msg.send({audio: buffer,mimetype: 'audio/mpeg', ptt: false,
+    contextInfo: {externalAdReply: {title: data.title,body: 'YouTube MP3',thumbnailUrl: data.thumbnail,mediaType: 2,mediaUrl: url,sourceUrl: url
+            }
+        }
+    });
+});
 
 Command({
   cmd_name: 'song',
