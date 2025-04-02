@@ -8,12 +8,12 @@ Command({
   category: "search",
   desc: "Search for songs on Apple Music"
 })(async (msg) => {
-  if (!msg.text) return msg.reply("Provide a song name to search");
+  if (!msg.text) return msg.reply("_Provide a song name to search_");
   let results = await searchAppleMusic(msg.text);
   if (!results || results.length === 0) return;
   results = results.slice(0, 12); 
   let res = results.map((song, i) => 
-    `*Apple Search*:\n\n*${i + 1}${song.title}*\n*Artist*: ${song.artist.name}\n${song.song}`
+    `*Apple Search*:\n\n*${i + 1}${song.title}*\n*▢Artist:* ${song.artist.name}\n${song.song}`
   ).join("\n\n");
 
   await msg.reply(res);
