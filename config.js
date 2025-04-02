@@ -14,6 +14,8 @@ module.exports = {
     MONGODB_URI: process.env.MONGODB_URI || '', // get url at mongodb.atlas
     
     PASTE_BIN_API: process.env.PASTE_BIN_API || '', //pastebin key for session 
+
+    API: 'https://diegoson-naxordeve.hf.space',
     
     FOOTER: process.env.FOOTER || '© wabot',
     LANG: process.env.LANG || 'en',
