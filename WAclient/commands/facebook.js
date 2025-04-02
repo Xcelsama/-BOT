@@ -12,5 +12,5 @@ Command({
   if (data.status !== 200 || !data.data) return;
   let vid = data.data['720p (HD)'] || data.data['360p (SD)'];
   if (!vid) return;
-  await msg.send({video: { url: vid }, caption: `🔹*Quality:* ${data.data['720p (HD)'] ? 'HD (720p)' : 'SD (360p)'}\n🔹*X ASTRAL*`});
+  await msg.send({video: { url: vid }, caption: `*▢Quality:* ${data.data['720p (HD)'] ? 'HD (720p)' : 'SD (360p)'}\n*▢X ASTRAL*`});
 });
