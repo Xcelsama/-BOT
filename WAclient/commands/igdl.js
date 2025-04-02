@@ -1,5 +1,5 @@
-const { Command } = require('../lib/command');
-const { extractUrl } = require('../lib/Functions');
+const { Command } = require('../../lib/command');
+const { extractUrl } = require('../../lib/Functions');
 const axios = require('axios');
 
 Command({
