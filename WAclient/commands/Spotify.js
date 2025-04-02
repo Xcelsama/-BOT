@@ -1,7 +1,7 @@
 var { Command } = require('../../lib/command');
 var axios = require('axios');
 const config = require('../../config');
-var {AddMetadata} = require('./Func/MP3Data');
+var {AddMetadata} = require('./Func/Mp3Data');
 
 Command({
   cmd_name: 'spotifydl',
