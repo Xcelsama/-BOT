@@ -4,7 +4,7 @@ const axios = require('axios');
 
 Command({
   cmd_name: 'igdl',
-  aliases: ['instadl'],
+  aliases: ['insta'],
   category: 'media',
   desc: 'Download Instagram post/reel '
 })(async (msg) => {
