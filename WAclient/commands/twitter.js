@@ -13,5 +13,5 @@ Command({
     if (!url) return msg.reply('*_Please provide a Twitter url_*');
     const data = await getTwitterVideo(url);
     if (!data) return;
-    await msg.send({video: { url: data.video },caption: `*Username:* ${data.username}\n*Caption:* ${data.caption}`,mimetype: 'video/mp4'});
+    await msg.send({video: { url: data.video },caption: `*▢Username:* ${data.username}\n*▢Caption:* ${data.caption}`,mimetype: 'video/mp4'});
 });
