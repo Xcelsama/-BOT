@@ -33,6 +33,7 @@ Command({
     artist: data.artist, 
   });
 
-  await msg.send({ audio: mp3Buffer, mimetype: 'audio/mpeg', contextInfo: {externalAdReply: {title: data.title,body: 'Astral',mediaType: 1,thumbnailUrl: data.cover,sourceUrl: msg.text
-   }}
+  await msg.send({ audio: mp3Buffer, mimetype: 'audio/mpeg', contextInfo: {externalAdReply: {title: data.title,body: 'Astral',mediaType: 1,thumbnailUrl: data.cover,sourceUrl: msg.text}}
+  });
+                  
 });
