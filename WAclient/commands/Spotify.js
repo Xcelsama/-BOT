@@ -11,7 +11,7 @@ Command({
   if (!msg.text) return msg.reply('Provide a song name to search.');
   let { data } = await axios.get(`${config.API}/Spotify/search?query=${msg.text}&limit=10`);
   if (!data || !data.length) return;
-  let results = data.map((song, i) => `${i + 1}. *${song.title}* - ${song.artist}\n⏱ ${song.duration} | [Spotify](${song.url})`).join('\n\n');
+  let results = data.map((song, i) => `${i + 1}. *${song.title}*\n*▢Artist*${song.artist}\n▢${song.duration}\n▢[Spotify](${song.url})`).join('\n\n');
   await msg.reply(`*Spotify Search:*\n\n${results}`);
 });
 
