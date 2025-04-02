@@ -1,6 +1,7 @@
 const { Command } = require('../../lib/command');
 var { getYouTubeMP3} = require('./Func/yt.js');
 const {AddMetadata} = require('./Func/Mp3Data');
+let {extractUrl} = require('../../lib/Functions');
 const axios = require('axios');
 
 Command({
