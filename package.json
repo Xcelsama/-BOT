@@ -16,12 +16,13 @@
     "aptoide-api": "^4.0.7",
     "axios": "^1.8.3",
     "pastebin-js": "^1.0.6",
+    "node-fetch": "^3.3.2",
     "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
     "dotenv": "^16.4.7",
     "pm2": "^5.4.3",
     "pino": "^9.6.0",
     "sharp": "^0.33.5",
-    "mongoose": "*",
+    "mongoose": "^8.13.1",
     "sqlite3": "^5.1.7"
   }
 }
