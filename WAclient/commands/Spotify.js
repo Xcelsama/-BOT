@@ -4,6 +4,20 @@ const config = require('../../config');
 var {AddMetadata} = require('./Func/Mp3Data');
 
 Command({
+  cmd_name: 'spotisearch',
+  category: 'search',
+  desc: 'Search for songs on Spotify'
+})(async (msg) => {
+  if (!msg.text) return msg.reply('Provide a song name to search.');
+  let { data } = await axios.get(`${config.API}/Spotify/search?query=${msg.text}&limit=10`);
+  if (!data || !data.length) return;
+  let results = data.map((song, i) => `${i + 1}. *${song.title}* - ${song.artist}\n⏱ ${song.duration} | [Spotify](${song.url})`).join('\n\n');
+  await msg.reply(`*Spotify Search:*\n\n${results}`);
+});
+
+
+
+Command({
   cmd_name: 'spotify',
   aliases: ['spdl'],
   category: 'downloader',
