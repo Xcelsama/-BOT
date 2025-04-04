@@ -13,6 +13,7 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@types/node": "^18.0.6",
+    "cheerio": "^1.0.0-rc.10",
     "aptoide-api": "^4.0.7",
     "axios": "^1.8.3",
     "pastebin-js": "^1.0.6",
@@ -21,7 +22,7 @@
     "dotenv": "^16.4.7",
     "pm2": "^5.4.3",
     "pino": "^9.6.0",
-    "sharp": "^0.33.5",
+    "sharp": "*",
     "mongoose": "^8.13.1",
     "sqlite3": "^5.1.7"
   }
