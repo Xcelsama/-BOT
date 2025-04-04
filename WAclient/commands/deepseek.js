@@ -6,9 +6,7 @@ Command({
   category: "AI",
   desc: "Chat with DeepSeek AI",
   })(async (msg) => {
-    if (!msg.text) return msg.send("_Please provide a q_");
-    var tek = await msg.send("Thinking...");
-
+   if (!msg.text) return msg.send("_Please provide a q_");
    const { data } = await axios
       .post("https://ai.clauodflare.workers.dev/chat", {
         model: "@cf/deepseek-ai/deepseek-r1-distill-qwen-32b",
