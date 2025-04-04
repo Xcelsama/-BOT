@@ -16,6 +16,7 @@
     "axios": "^1.8.3",
     "pastebin-js": "^1.0.6",
     "node-fetch": "^2.6.7",
+    "node-id3": "^0.2.9",
     "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
     "dotenv": "^16.4.7",
     "moment-timezone": "^0.5.46",
