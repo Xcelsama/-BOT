@@ -6,7 +6,7 @@ Command({
     category: 'owner',
     desc: 'Add a number to MODS (Reply or provide number)'
 })(async (msg, conn) => {
-    if (!msg.fromMe && msg.sender.split('@')[0] !== config.OWNER_NUM) 
+    if (!msg.fromMe && msg.sender.split('@')[0] !== config.OWNER_NUM) return;
     let number;  if (msg.quoted) {
     number = msg.quoted.sender.split('@')[0];
     } else { number = msg.text.replace(/[^0-9]/g, ''); }
