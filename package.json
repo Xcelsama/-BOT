@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "pm2 start index.js --name whatsapp-bot",
+    "start": "pm2 start index.js --attach --name whatsapp-bot",
     "stop": "pm2 stop whatsapp-bot",
-    "restart": "pm2 restart whatsapp-bot",
-    "monitor": "pm2 monit",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
