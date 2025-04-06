@@ -1,5 +1,6 @@
 const axios = require("axios");
 var { Command } = require('../../lib/command');
+let {extractUrl} = require('../../lib/Functions');
 
 Command({
     cmd_name: "mediafire",
