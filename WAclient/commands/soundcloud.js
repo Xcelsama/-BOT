@@ -44,8 +44,8 @@ Command({
     const script = $("#app > noscript").eq(1).html();
     const _$ = cheerio.load(script);
     const results = [];
-
-    _$("ul > li > h2 > a").each((_, el) => {
+    
+     _$("ul > li > h2 > a").slice(0, 12).each((_, el) => {
       const href = _$ (el).attr("href");
       if (href.split("/").length === 3) {
         results.push(`• ${_$(el).text()}\nhttps://soundcloud.com${href}`);
