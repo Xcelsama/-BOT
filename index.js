@@ -27,7 +27,8 @@ if (!fs.existsSync(cred)) {
 }
 
 async function startBot() {
-    await connectDB();
+    await connectMongoDB();
+    connectSQLite();
     const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
     const conn = makeWASocket({
         printQRInTerminal: false,
