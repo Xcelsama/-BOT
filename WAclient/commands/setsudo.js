@@ -34,7 +34,7 @@ Command({
     desc: 'Get list of MODS'
 })(async (msg, conn) => {
     if (!msg.fromMe && msg.sender.split('@')[0] !== config.OWNER_NUM) return;
-    const mods = config.MODS.filter(mod => mod); // Remove empty entries
+    const mods = config.MODS.filter(mod => mod); 
     if (mods.length === 0) return msg.reply('*No MODS found*');
     const modsText = mods.map(mod => `@${mod}`).join('\n');
     await msg.reply(`*MODS LIST:*\n\n${modsText}`, {
