@@ -1,36 +1,33 @@
-
-const { Command } = require('../../lib/command.js');
+var { Command } = require('../../lib/command.js');
 const config = require('../../config.js');
 const fs = require('fs');
-
-const pendingModes = new Map();
 
 Command({
     cmd_name: 'mode',
     aliases: ['worktype'],
     category: 'owner',
     desc: 'Change bot work type between public and private'
-})(async (client, m, { args }) => {
-    if (pendingModes.has(m.sender)) {
-        const choice = m.text;
-        pendingModes.delete(m.sender);
-        
-        const configPath = './config.js';
-        let configContent = fs.readFileSync(configPath, 'utf8');
-        
+})(async (msg) => {
+    const ctx = new Map();
+    if(!msg.fromMe) return;
+    if (ctx.has(msg.sender)) {
+        const choice = msg.text;
+        ctx.delete(msg.sender);
+        const pk = '../../config.js';
+        let voidi = fs.readFileSync(pk, 'utf8');
         if (choice === '1') {
-            configContent = configContent.replace(/WORKTYPE:.*?'.*?'/, `WORKTYPE: process.env.WORK_TYPE || 'public'`);
-            fs.writeFileSync(configPath, configContent);
-            return m.reply('Bot mode changed to *Public*\nRestarting...');
+            voidi = voidi.replace(/WORKTYPE:.*?'.*?'/, `WORKTYPE: process.env.WORK_TYPE || 'public'`);
+            fs.writeFileSync(pk, voidi);
+            return msg.reply('Bot mode changed to *Public*\nRestarting...');
         } else if (choice === '2') {
-            configContent = configContent.replace(/WORKTYPE:.*?'.*?'/, `WORKTYPE: process.env.WORK_TYPE || 'private'`);
-            fs.writeFileSync(configContent, configContent);
-            return m.reply('Bot mode changed to *Private*\nRestarting...');
+            pk = voidi.replace(/WORKTYPE:.*?'.*?'/, `WORKTYPE: process.env.WORK_TYPE || 'private'`);
+            fs.writeFileSync(voidi, voidi);
+            return msg.reply('Bot mode changed to *Private*\nRestarting...');
         } else {
-            return m.reply('Invalid choice. Mode change cancelled.');
+            return msg.reply('_Invalid choice_');
         }
     }
 
-    pendingModes.set(m.sender, true);
-    return m.reply('*Choose bot mode:*\n\n1. Public Mode\n2. Private Mode');
+    ctx.set(msg.sender, true);
+    return msg.reply('*Choose bot mode:*\n\n1. Public Mode\n2. Private Mode');
 });
