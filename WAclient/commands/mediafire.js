@@ -1,4 +1,5 @@
 const axios = require("axios");
+var config = require('../../config');
 var { Command } = require('../../lib/command');
 let {extractUrl} = require('../../lib/Functions');
 
@@ -15,7 +16,7 @@ Command({
         );
     }
     if (!url || !url.startsWith("https://www.mediafire.com/")) return msg.reply("*_Please provide a valid mediafire url_*");
-    const api = `https://diegoson-naxordeve.hf.space/mediafire?url=${url}`;
+    const api = `${config.API}/mediafire?url=${url}`;
     const { data } = await axios.get(api);
     if (data?.downloadLink) {
         await msg.send({document: { url: data.downloadLink },fileName: data.fileName, mimetype: 'application/octet-stream', caption: `*Name:* ${data.fileName}\n*Size:* ${data.fileSize}\n*X ASTRAL*`
