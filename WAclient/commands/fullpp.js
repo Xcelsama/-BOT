@@ -6,7 +6,7 @@ Command({
     category: "owner",
     desc: "Set full profile picture"
 })
-(async ({ msg }) => {
+(async ( msg ) => {
         if (!msg.fromMe) return;
         let image;
         if (msg.quoted && msg.quoted.type.includes('image')) {
