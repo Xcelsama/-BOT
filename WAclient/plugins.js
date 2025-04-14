@@ -8,17 +8,17 @@ function plugins() {
     
     console.log('\n=== Loading Commands ===');
     for (const file of co) {
-        const subPath = path.join(com, file);
-        if (fs.statSync(subPath).isDirectory()) {
-            const subFiles = fs.readdirSync(subPath).filter(f => f.endsWith('.js'));
-            console.log(`📁 ${file}`);
-            for (const subFile of subFiles) {
-                require(path.join(subPath, subFile));
-                console.log(`  ├─ ${subFile}`);
+        const ctxx = path.join(com, file);
+        if (fs.statSync(ctxx).isDirectory()) {
+            const ctx = fs.readdirSync(ctxx).filter(f => f.endsWith('.js'));
+            console.log(`${file}`);
+            for (const ctxx of ctx) {
+                require(path.join(ctxx, ctx));
+                console.log(`├─ ${ctx}`);
             }
         } else {
             require(path.join(com, file));
-            console.log(`📄 ${file}`);
+            console.log(`${file}`);
         }
     }
     console.log('\nCommands loaded successfully ✅');
