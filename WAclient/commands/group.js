@@ -1,4 +1,3 @@
-
 const { Command } = require('../../lib/command');
 
 Command({
@@ -123,3 +122,90 @@ Command({
     const info = `*Group Info*\n\nName: ${msg.groupName}\nID: ${msg.user}\nMembers: ${msg.groupMembers.length}\nAdmins: ${msg.groupAdmins.length}\nDesc: ${msg.groupDesc}`;
     await msg.reply(info);
 });
+
+Command({
+    cmd_name: 'tag',
+    aliases: ['tagall', 'all'],
+    category: 'admin',
+    desc: 'Tag all group members'
+})(async (msg,args) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    await msg.tagAll(args.join(' '));
+});
+
+Command({
+    cmd_name: 'del',
+    aliases: ['delete'],
+    category: 'admin',
+    desc: 'Delete quoted message'
+})(async (msg) => {
+    if (!msg.fromMe) return;
+    if (!msg.quoted) return msg.reply('Reply to a message to delete');
+    if (!msg.quoted.fromMe) return msg.reply('I can only delete my own messages');
+    await msg.reply({ delete: msg.quoted.key });
+});
+
+Command({
+    cmd_name: 'delall',
+    aliases: ['clearall'],
+    category: 'admin',
+    desc: 'Delete all bot messages'
+})
+ (async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    const messages = await msg.loadMessages(msg.user, 100);
+    let deleted = 0;
+    for (const message of messages) {
+        if (message.key.fromMe) {
+            await msg.reply({ delete: message.key });
+            deleted++;
+        }
+    }
+    
+    await msg.reply(`Successfully deleted ${deleted} messages`);
+});
+
+Command({
+    cmd_name: 'getjids',
+    category: 'admin',
+    desc: 'Get all group JIDs'
+})
+ (async (msg) => {
+    const jids = await msg.getJids();
+    let text = '*Group JIDs*\n\n';
+    for (let jid of jids) {
+        text += `${jid}\n`;
+    }
+    await msg.reply(text);
+});
+
+Command({
+    cmd_name: 'grouppp',
+    aliases: ['gpp'],
+    category: 'admin',
+    desc: 'Set full group profile picture'
+})
+ (async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    if (!msg.isBotAdmin) return msg.reply('Bot needs to be admin');
+    let image;
+    if (msg.quoted && msg.quoted.type.includes('image')) {
+        const buffer = await msg.quoted.download();
+        image = buffer;
+    } else if (msg.type.includes('image')) {
+        const buffer = await msg.download();
+        image = buffer;
+    } else {
+        return msg.reply('Please reply to an image');
+    }
+    var success = await msg.toFullpp(image, true);
+    if (success) {
+        await msg.reply('_Group profile picture updated_');
+    } else {
+        await msg.reply('err');
+    }
+});
+
