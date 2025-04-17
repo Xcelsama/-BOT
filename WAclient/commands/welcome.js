@@ -4,7 +4,7 @@ const Group = require('../../lib/DB/schemas/GroupSchema');
 Command({
     cmd_name: 'welcome',
     aliases: ['setwelcome'],
-    category: 'group',
+    category: 'admin',
     desc: 'Toggle welcome message or set custom welcome message',
     usage: '.welcome [on/off] or .welcome <custom message>'
 })(async (msg, args) => {
