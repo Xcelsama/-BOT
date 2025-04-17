@@ -9,7 +9,7 @@ Command({
     usage: '.welcome [on/off] or .welcome <custom message>'
 })(async (msg, args) => {
     if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command!*');
+    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
     if (!args.length) { group.welcome = !group.welcome;
      await group.save();
