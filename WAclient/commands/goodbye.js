@@ -1,4 +1,4 @@
-const { Command } = require('../../lib/command');
+const {Command} = require('../../lib/command');
 const Group = require('../../lib/DB/schemas/GroupSchema');
 
 Command({
@@ -7,9 +7,10 @@ Command({
     category: 'admin',
     desc: 'Toggle goodbye message or set custom goodbye message',
     usage: '.goodbye [on/off] or .goodbye <custom message>'
-})(async (msg, args) => {
+})(async (msg) => {
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
+    var args = msg.text;
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
     if (!args.length) {
         group.goodbye = !group.goodbye;
