@@ -7,7 +7,7 @@ Command({
     category: 'admin',
     desc: 'Toggle welcome message or set custom welcome message',
     usage: '.welcome [on/off] or .welcome <custom message>'
-})(async (msg, args) => {
+})(async (msg) => {
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
     var args = msg.text;
