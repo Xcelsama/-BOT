@@ -8,8 +8,9 @@ Command({
     aliases: ['conv', 'tomp3', 'tomp4', 'togif'],
     category: 'tools',
     desc: 'Convert media files between formats'
-})(async (msg, args) => {
+})(async (msg) => {
     if (!msg.quoted) return msg.reply('*Reply to a media msg*');
+    var args = msg.text;
     const type = args[0]?.toLowerCase() || 'mp3';
     const stream = await msg.quoted.download();
     if (!stream) return;
