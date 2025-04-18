@@ -1,4 +1,5 @@
 const git = require('simple-git')();
+var {Command} = require('../../lib/command');
 
 Command({
     cmd_name: 'update',
