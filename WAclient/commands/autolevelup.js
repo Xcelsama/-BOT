@@ -1,62 +1,36 @@
-
 const {Command} = require('../../lib/command');
-const Levels = require('discord-xp');
-
-// Connect to MongoDB
-Levels.setURL(process.env.MONGODB_URI || "mongodb://localhost:27017/whatsapp");
-
-// Message counter for each user
-const messageCounter = new Map();
-const MSG_THRESHOLD = 6; // Number of messages needed for XP
-
-const roles = {
-  5: "🥉 Bronze",
-  10: "🥈 Silver", 
-  15: "🥇 Gold",
-  20: "💎 Diamond",
-  25: "👑 Crown",
-  30: "🌟 Star",
-  40: "🔮 Master",
-  50: "🎭 Legend"
-};
-
 const config = require('../../config');
+const Levels = require('discord-xp');
+Levels.setURL(config.MONGODB_URI);
 
 Command({
   on: 'text'
 })(async(msg) => {
   if (!config.XP_SYSTEM) return;
-  try {
-    // Increment message counter for user
-    const currentCount = (messageCounter.get(msg.sender) || 0) + 1;
-    messageCounter.set(msg.sender, currentCount);
-
-    // Only proceed if message threshold is reached
-    if (currentCount >= MSG_THRESHOLD) {
-      const randomXp = Math.floor(Math.random() * 10) + 15; // Random XP between 15-25
-      const hasLeveledUp = await Levels.appendXp(msg.sender, "main", randomXp);
-      messageCounter.set(msg.sender, 0); // Reset counter
-
-      if (hasLeveledUp) {
+  var ctx = new Map();
+  const roles = { 5: "🥉 Bronze",
+  10: "🥈 Silver",  15: "🥇 Gold", 20: "💎 Diamond", 25: "👑 Crown", 30: "🌟 Star",  40: "🔮 Master", 50: "🎭 Legend", 60: "❤️ Super Saiyan"
+  };
+  var _patch = 6; 
+   const cu = (ctx.get(msg.sender) || 0) + 1;
+    ctx.set(msg.sender, cu);
+    if (cu >= _patch) {
+      const rx = Math.floor(Math.random() * 10) + 15; 
+      const max = await Levels.appendXp(msg.sender, "main", rx);
+      ctx.set(msg.sender, 0); 
+      if (max) {
         const user = await Levels.fetch(msg.sender, "main");
-        const ppUrl = await msg.Profile(msg.sender);
-        let userRole = "🌱 Newbie";
-        
-        // Find the highest role for current level
+        var ig = await msg.Profile(msg.sender);
+        let type = "🌱 Newbie";
         for (const [level, role] of Object.entries(roles)) {
           if (user.level >= parseInt(level)) {
-            userRole = role;
+            type = role;
           }
         }
 
-        await msg.reply({
-          image: { url: ppUrl },
-          caption: `*🎉 LEVEL UP!*\n\n*👤 User:* @${msg.sender.split('@')[0]}\n*📊 Level:* ${user.level}\n*💫 XP:* ${user.xp}\n*🎯 Role:* ${userRole}\n\n_Send ${MSG_THRESHOLD} messages to earn XP!_`,
+        await msg.send({image: { url: ig }, caption: `*===[LEVEL UP]===*\n\n*👤 User:* @${msg.sender.split(}\n*📊 Level:* ${user.level}\n*💫 XP:* ${user.xp}\n*🎯 Role:* ${type}\n\n_keep up_`,
           mentions: [msg.sender]
         });
       }
     }
-  } catch (err) {
-    console.error("Error in XP system:", err);
-  }
 });
