@@ -16,7 +16,7 @@ Command({
       msg.quoted.message?.extendedTextMessage?.text || ''
     );
   }
-  if (!url) return msg.reply('_Please provide Instagram url_');
+  if (!url) return msg.send('_Please provide Instagram url_');
   const res = await axios.get(`${config.API}/instagram/v5?url=${url}`);
   const data = res.data;
   if (!data || !data.downloadUrls || data.downloadUrls.length === 0)
