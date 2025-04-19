@@ -28,7 +28,7 @@ Command({
           }
         }
 
-        await msg.send({image: { url: ig }, caption: `*===[LEVEL UP]===*\n\n*👤 User:* @${msg.sender.split(}\n*📊 Level:* ${user.level}\n*💫 XP:* ${user.xp}\n*🎯 Role:* ${type}\n\n_keep up_`,
+        await msg.send({image: { url: ig }, caption: `*===[LEVEL UP]===*\n\n*👤 User:* @${msg.sender.split('@')[0]}\n*📊 Level:* ${user.level}\n*💫 XP:* ${user.xp}\n*🎯 Role:* ${type}\n\n_keep up_`,
           mentions: [msg.sender]
         });
       }
