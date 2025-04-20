@@ -3,7 +3,7 @@ const {Command} = require("../../lib/command");
 var config = require("../../config");
 
 Command({
-    cmd_name: "geminipro",
+    cmd_name: "gemini",
     category: "AI",
     desc: "Google gemini pro"
 })(async (msg) => {
