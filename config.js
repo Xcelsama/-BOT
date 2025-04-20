@@ -1,4 +1,5 @@
 require('dotenv').config();
+var Toggle = (x) => x === "true";
 
 module.exports = {
     PREFIX: new RegExp(process.env.PREFIX || '^[!/.#?~]'),
@@ -18,7 +19,7 @@ module.exports = {
     API: 'https://diegoson-naxordeve.hf.space',
 
 
-    XP_SYSTEM: process.env.XP_SYSTEM || '', //treu/false
+    XP_SYSTEM: Toggle(process.env.XP_SYSTEM || false), //treu/false
     
     FOOTER: process.env.FOOTER || '© whatsapp',
     LANG: process.env.LANG || 'en',
