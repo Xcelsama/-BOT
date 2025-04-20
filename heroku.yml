@@ -1,1 +1,9 @@
+build:
 
+  docker:
+
+      worker: /media/Dockerfile
+
+run:
+
+   worker: npm start
