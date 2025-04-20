@@ -19,7 +19,7 @@ module.exports = {
     API: 'https://diegoson-naxordeve.hf.space',
 
 
-    XP_SYSTEM: Toggle(process.env.XP_SYSTEM || false), //treu/false
+    XP_SYSTEM: Toggle(process.env.XP_SYSTEM) || false, //treu/false
     
     FOOTER: process.env.FOOTER || '© whatsapp',
     LANG: process.env.LANG || 'en',
