@@ -12,7 +12,7 @@ module.exports = {
 
     SESSION_ID: process.env.SESSION_ID || '', //session id
 
-    GEMINI_API_KEY: process.env.GEMINI_API_KEY || '',
+    GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyCzlWIpR-ljOkX2InphFWau4OESfk_HJyY',
 
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://whatsbixby:whatsbixby@cluster0.idp3t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // get url at mongodb.atlas
     
