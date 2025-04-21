@@ -10,7 +10,7 @@ module.exports = {
     
     GROK_API: process.env.GROK_API || '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', //get key at console.groq.com
 
-    SESSION_ID: process.env.SESSION_ID || '', //session id
+    SESSION_ID: process.env.SESSION_ID || 'xastral~petepiqedo', //session id
 
     GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyCzlWIpR-ljOkX2InphFWau4OESfk_HJyY',
 
