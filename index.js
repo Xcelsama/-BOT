@@ -2,7 +2,7 @@ const { startBot } = require('./lib/client');
 
 const connect = async () => {
     try {
-        await startBot.setupSession();
+        await startBot();
     } catch (err) {
         console.error(err);
     }
