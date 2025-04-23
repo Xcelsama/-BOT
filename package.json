@@ -17,6 +17,7 @@
     "discord-xp": "^1.1.16",
     "axios": "^1.8.3",
     "node-fetch": "^2.6.7",
+    "wa-sticker-formatter": "^4.4.4",
     "node-id3": "^0.2.9",
     "@whiskeysockets/baileys": "git+https://github.com/Diegoson/Baileys.git",
     "dotenv": "^16.4.7",
