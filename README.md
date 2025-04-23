@@ -20,7 +20,7 @@
    To start the bot, run:
 
    ```sh
-   pm2 start . --name xastarl --attach --time
+   pm2 start index.js --name xastarl --attach --time
    ```
 
    To stop the bot, run:
