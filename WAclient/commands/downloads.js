@@ -23,7 +23,7 @@ Command({
 Command({
     cmd_name: 'tiktok',
     aliases: ["tik"],
-    category: 'downloads',
+    category: 'downloader',
     desc: 'Download TikTok video'
 })(async (msg, conn) => {
     const url = extractUrl(msg.text);
