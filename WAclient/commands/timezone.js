@@ -3,7 +3,7 @@ const moment = require('moment-timezone');
           
 Command({
   cmd_name: 'time',
-  category: 'misic',
+  category: 'misc',
   desc: 'Get current timezone'
 })(async (msg) => {
   const zone = msg.text;
