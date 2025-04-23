@@ -4,7 +4,7 @@ const {Command} = require('../../lib/command');
 
 Command({
   cmd_name: 'help',
-  category: 'main',
+  category: 'core',
   desc: 'List all available commands'
 })(async (msg) => {
   const kf = __dirname;
