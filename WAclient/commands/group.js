@@ -115,7 +115,7 @@ Command({
 Command({
     cmd_name: 'link',
     aliases: ['invite'],
-    category: 'group',
+    category: 'admin',
     desc: 'Get group invite link'
 })(async (msg) => {
     if (!msg.isGroup) return;
@@ -127,7 +127,7 @@ Command({
 Command({
     cmd_name: 'ginfo',
     aliases: ['groupinfo'],
-    category: 'group',
+    category: 'admin',
     desc: 'Get group information'
 })(async (msg) => {
     if (!msg.isGroup) return;
