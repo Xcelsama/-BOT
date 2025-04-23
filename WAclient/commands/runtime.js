@@ -3,7 +3,7 @@ var {runtime} = require('../../lib/Functions');
 
 Command({
   cmd_name: 'runtime',
-  category: 'info',
+  category: 'misc',
   desc: 'Shows how long the bot has been running'
 })(async (msg) => {
   const time = process.uptime();
