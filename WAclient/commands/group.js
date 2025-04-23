@@ -1,4 +1,16 @@
-const { Command } = require('../../lib/command');
+var { Command } = require('../../lib/command');
+
+Command({
+  cmd_name: 'mentionall',
+  category: 'admin',
+  desc: 'Mention all members in the group'
+})(async (msg) => {
+  if (!msg.isGroup) return;
+  const participants = msg.participants || [];
+  const mentions = participants.map(p => p.id);
+  const names = participants.map(p => `▪️ @${p.id.split('@')[0]}`).join('\n');
+  await msg.send(`*Group Mention*\n\n${names}`, { mentions });
+});
 
 Command({
     cmd_name: 'close',
