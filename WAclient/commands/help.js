@@ -1,21 +1,30 @@
-var fs = require('fs');
-var path = require('path');
-var { Command } = require('../../lib/command');
+const fs = require('fs');
+const path = require('path');
+const {Command} = require('../../lib/command');
 
 Command({
   cmd_name: 'help',
   category: 'main',
-  desc: 'List all commands'
+  desc: 'List all available commands'
 })(async (msg) => {
-  const ctx = __dirname;
-  const files = fs.readdirSync(ctx).filter(f => f.endsWith('.js') && f !== 'help.js');
-
-  let list = '╭───❏ *COMMANDS*\n';
+  const kf = __dirname;
+  const files = fs.readdirSync(kf).filter(f => f.endsWith('.js') && f !== 'help.js');
+  const cmds = [];
   for (const file of files) {
-    const cmd = file.replace('.js', '');
-    list += `│ • ${cmd}\n`;
+    try { const ctx = path.join(kf, file);
+      const data = fs.readFileSync(ctx, 'utf8');
+      const match = data.match(/cmd_name:\s*['"`](.*?)['"`]/);
+      if (match) cmds.push(match[1]);
+    } catch {}
   }
 
-  list += '╰───❏';
+  if (!cmds.length) return;
+  const list = [
+    '╭───❏ *COMMANDS*',
+    ...cmds.map(cmd => `│ • ${cmd}`),
+    '╰───❏ '
+  ].join('\n');
+
   await msg.send(list);
 });
+    
