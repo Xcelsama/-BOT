@@ -1,8 +1,6 @@
 const fs = require('fs');
 const config = require('./config');
-const { startBot } = require('./lib/client');
-const { SessionCode } = require('./lib/session');
-const {connectMongoDB} = require('./lib/DB/database');
+const {startBot,connectMongoDB,SessionCode} = require('./lib/index');
 
 const Client = async () => {
     if (!fs.existsSync("./lib/multi_auth/creds.json")) 
