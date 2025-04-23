@@ -6,7 +6,7 @@ Command({
   category: 'converter',
   desc: 'Make sticker'
 })(async (msg) => {
-  const mime = msg.quoted?.mimetype || msg.mimetype;
+  const mime = msg.quoted?.type || msg.type;
   if (!/image|video|gif/.test(mime)) return await msg.send('Reply to an image, video, or gif\n\n*Example:* take MyPack|ByMe');
   const [pack, author] = (msg.args.join(' ') || '').split('|');
   if (!pack || !author) return await msg.send('*usage:* take Pack|Author');
@@ -23,7 +23,7 @@ Command({
   category: 'converter',
   desc: 'Convert image, video, or gif to sticker'
 })(async (msg) => {
-  const mime = msg.quoted?.mimetype || msg.mimetype;
+  const mime = msg.quoted?.type || msg.type;
   if (!/image|video|gif/.test(mime)) return await msg.send('Reply to an image, video, or gif');
   const buffer = await msg.quoted?.download() || await msg.download();
   const sticker = new Sticker(buffer, {
