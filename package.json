@@ -22,7 +22,7 @@
     "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
     "dotenv": "^16.4.7",
     "moment-timezone": "^0.5.46",
-    "pm2": "^5.4.3",
+    "pm2": "^6.0.5",
     "pino": "^9.6.0",
     "sharp": "*",
     "simple-git": "^2.37.0",
