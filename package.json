@@ -10,8 +10,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@whiskeysockets/baileys": "github:WhiskeySockets/Baileys",
     "@hapi/boom": "^10.0.1",
-    "@types/node": "^18.0.6",
     "@google/genai": "^0.9.0",
     "cheerio": "^1.0.0-rc.10",
     "aptoide-api": "^4.0.7",
@@ -20,7 +20,6 @@
     "node-fetch": "^2.6.7",
     "wa-sticker-formatter": "^4.4.4",
     "node-id3": "^0.2.9",
-    "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
     "dotenv": "^16.4.5",
     "moment-timezone": "^0.5.46",
     "pm2": "^6.0.5",
