@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "node -e \"try { require('sharp') } catch (e) { process.exit(1); }\" || yarn add --ignore-engines sharp@0.33.5",
     "start": "pm2 start index.js --attach --name xastral",
     "stop": "pm2 stop xastral",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -24,7 +25,7 @@
     "moment-timezone": "^0.5.46",
     "pm2": "^6.0.5",
     "pino": "^9.6.0",
-    "sharp": "*",
+    "sharp":  "^0.33.5",
     "simple-git": "^2.37.0",
     "mongoose": "^8.13.1",
     "sqlite3": "^5.1.7"
