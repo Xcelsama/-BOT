@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { Command } = require('../../lib/command.js');
-const config = require('../../config.js');
+const config = path.join(__dirname, '../../config.js');
 
 Command({
   cmd_name: 'mode',
