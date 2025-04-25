@@ -1,4 +1,3 @@
-
 const {Command} = require('../../lib/command');
 const Group = require('../../lib/DB/schemas/GroupSchema');
 
@@ -9,10 +8,9 @@ Command({
     usage: '.welcome [on/off]'
 })(async (msg) => {
     if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
+    if (!msg.isAdmin && !msg.fromMe) return;
     var args = msg.text;
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
-    
     if (!args.length) {
         group.welcome = !group.welcome;
         await group.save();
@@ -40,10 +38,9 @@ Command({
     usage: '.setwelcome <custom message>'
 })(async (msg) => {
     if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
+    if (!msg.isAdmin && !msg.fromMe) return;
     var args = msg.text;
     if (!args.length) return msg.reply('*Please provide a welcome message*');
-    
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
     group.welcomemsg = args;
     await group.save();
