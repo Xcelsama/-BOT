@@ -178,7 +178,7 @@ Command({
         }
         await msg.reply(`Successfully deleted ${deleted} messages`);
     } catch (error) {
-        await msg.reply('Failed to delete messages: ' + error.message);
+        await msg.reply(error.message);
     }
 });
 
