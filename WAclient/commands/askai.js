@@ -7,7 +7,7 @@ Command({
   category: "AI",
   desc: "Ask Gemini AI anything",
 }) 
-async (msg) => {
+(async (msg) => {
   if (!msg.text) return msg.reply("*_Please provide a prompt_*");
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${config.GEMINI_API_KEY}`;
   const body = { contents: [
@@ -31,4 +31,4 @@ async (msg) => {
   const reply = json?.candidates?.[0]?.content?.parts?.[0]?.text;
   if (!reply) return;
   return msg.reply(reply);
-};
+});
