@@ -14,14 +14,10 @@ module.exports = {
 
     GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyCzlWIpR-ljOkX2InphFWau4OESfk_HJyY',
 
-    MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://whatsbixby:whatsbixby@cluster0.idp3t.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // get url at mongodb.atlas
-    
-    
-    API: 'https://diegoson-naxordeve.hf.space',
+    MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://xastral:naxordeve27@cluster0.xkzaq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // get url at mongodb.atlas
+       
+    API: 'https://diegoson-astarl.hf.space',
 
-
-    XP_SYSTEM: Toggle(process.env.XP_SYSTEM) || true, //treu/false
-    
     FOOTER: process.env.FOOTER || '© whatsapp',
     LANG: process.env.LANG || 'en',
     WORKTYPE: process.env.WORK_TYPE || 'private'
