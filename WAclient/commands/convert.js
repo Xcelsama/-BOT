@@ -19,8 +19,8 @@ Command({
         buffer = Buffer.concat([buffer, chunk]);
     }
     
-    const ctx = path.join(__dirname, '../../lib/temp', `input_${Date.now()}`);
-    const kf = path.join(__dirname, '../../lib/temp', `output_${Date.now()}`);
+    var ctx = path.join(__dirname, './temp', `input_${Date.now()}`);
+    const kf = path.join(__dirname, './temp', `output_${Date.now()}`);
     fs.writeFileSync(ctx, buffer);
     try {
         await new Promise((resolve, reject) => {
