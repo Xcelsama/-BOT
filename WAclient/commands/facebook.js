@@ -1,4 +1,5 @@
 var { Command } = require('../../lib/command');
+var config = require('../../config');
 var axios = require('axios');
 
 Command({
@@ -8,7 +9,7 @@ Command({
   desc: 'Download Facebook videos'
 })(async (msg) => {
   if (!msg.text) return msg.reply('Please provide a fb url');
-  let { data } = await axios.get(`https://diegoson-naxordeve.hf.space/facebook?url=${msg.text}`);
+  let { data } = await axios.get(`${config.API}/facebook?url=${msg.text}`);
   if (data.status !== 200 || !data.data) return;
   let vid = data.data['720p (HD)'] || data.data['360p (SD)'];
   if (!vid) return;
