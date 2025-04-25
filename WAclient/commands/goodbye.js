@@ -9,10 +9,9 @@ Command({
     usage: '.goodbye [on/off]'
 })(async (msg) => {
     if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
+    if (!msg.isAdmin && !msg.fromMe) return;
     var args = msg.text;
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
-    
     if (!args.length) {
         group.goodbye = !group.goodbye;
         await group.save();
@@ -40,10 +39,9 @@ Command({
     usage: '.setgoodbye <custom message>'
 })(async (msg) => {
     if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return msg.reply('*Admin only command*');
+    if (!msg.isAdmin && !msg.fromMe) return;
     var args = msg.text;
     if (!args.length) return msg.reply('*Please provide a goodbye message*');
-    
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
     group.goodbyemsg = args;
     await group.save();
