@@ -195,32 +195,3 @@ Command({
     }
     await msg.reply(text);
 });
-
-Command({
-    cmd_name: 'grouppp',
-    aliases: ['gpp'],
-    category: 'admin',
-    desc: 'Set full group profile picture'
-})
- (async (msg) => {
-    if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return;
-    if (!msg.isBotAdmin) return msg.reply('Bot needs to be admin');
-    let image;
-    if (msg.quoted && msg.quoted.type.includes('image')) {
-        const buffer = await msg.quoted.download();
-        image = buffer;
-    } else if (msg.type.includes('image')) {
-        const buffer = await msg.download();
-        image = buffer;
-    } else {
-        return msg.reply('Please reply to an image');
-    }
-    var success = await msg.toFullpp(image, true);
-    if (success) {
-        await msg.reply('_Group profile picture updated_');
-    } else {
-        await msg.reply('err');
-    }
-});
-
