@@ -1,6 +1,7 @@
 const { Command } = require('../../lib/command');
 var { monospace, extractUrl } = require('../../lib/Functions');
 const axios = require('axios');
+var config = require('../../config');
 
 Command({
   cmd_name: 'gitclone',
@@ -30,7 +31,7 @@ Command({
     if (!url && msg.quoted) {
       url = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
     }if (!url) return msg.reply('Please provide ttk url');
-    const res = await axios.get(`https://diegoson-naxordeve.hf.space/tiktok?url=${url}`);
+    const res = await axios.get(`${config.API}/tiktok?url=${url}`);
     if (res.data && res.data.data) {
         const data = res.data.data;
         const voidi = data.hdPlayUrl || data.playUrl;
