@@ -22,7 +22,7 @@ module.exports = {
 
     FOOTER: process.env.FOOTER || '© whatsapp',
     LANG: process.env.LANG || 'en',
-    WORKTYPE: process.env.WORK_TYPE || 'private'
+    WORKTYPE: process.env.WORK_TYPE || 'public'
 };
 
 
