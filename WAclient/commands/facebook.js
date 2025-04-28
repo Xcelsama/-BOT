@@ -14,7 +14,8 @@ Command({
       msg.quoted.message?.conversation || 
       msg.quoted.message?.extendedTextMessage?.text || ''
     );
-  } if (!url) return msg.reply('Please provide a facebook url');
+  } 
+  if (!url) return msg.reply('Please provide a facebook url');
   let { data } = await axios.get(`${config.API}/facebook?url=${url}`);
   if (data.status !== 200 || !data.data) return;
   let vid = data.data['720p (HD)'] || data.data['360p (SD)'];
