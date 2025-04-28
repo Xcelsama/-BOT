@@ -24,7 +24,7 @@
     "wa-sticker-formatter": "^4.4.4",
     "node-id3": "^0.2.9",
     "dotenv": "^16.4.5",
-    "jimp": "*",
+    "jimp": "^0.16.1",
     "moment-timezone": "^0.5.46",
     "pm2": "^6.0.5",
     "pino": "^9.6.0",
