@@ -8,7 +8,8 @@ Command({
 })(async (msg) => {
     if (!msg.fromMe) return;
     const quoted = msg.quoted ? msg.quoted : msg;
-    return msg.reply('*_Reply to an image_*');
+    const mime = quoted.type || '';
+    if (!/image/.test(mime)) return msg.reply('_Reply to an image_'); 
     const buffer = await quoted.download();
     await msg.updateProfilePicture(buffer);
     await msg.reply('*_Profile  updated_*');
