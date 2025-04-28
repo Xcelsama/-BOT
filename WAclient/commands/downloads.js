@@ -26,11 +26,15 @@ Command({
     aliases: ["tik"],
     category: 'downloader',
     desc: 'Download TikTok video'
-})(async (msg, conn) => {
-    const url = extractUrl(msg.text);
+})(async (msg) => {
+    let url = extractUrl(msg.text);
     if (!url && msg.quoted) {
-      url = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
-    }if (!url) return msg.reply('Please provide ttk url');
+    url = extractUrl(
+      msg.quoted.message?.conversation || 
+      msg.quoted.message?.extendedTextMessage?.text || ''
+    );
+   } 
+   if (!url) return msg.reply('Please provide a tiktok url');
     const res = await axios.get(`${config.API}/tiktok?url=${url}`);
     if (res.data && res.data.data) {
         const data = res.data.data;
