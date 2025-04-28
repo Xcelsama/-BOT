@@ -7,8 +7,9 @@ Command({
     desc: 'Set full size profile picture'
 })(async (msg) => {
     if (!msg.fromMe) return;
-    if (!msg.quoted || !msg.quoted.message) return msg.reply('*_Reply to an image_*');
-    const buffer = await msg.quoted.download();
+    const quoted = msg.quoted ? msg.quoted : msg;
+    return msg.reply('*_Reply to an image_*');
+    const buffer = await quoted.download();
     await msg.updateProfilePicture(buffer);
     await msg.reply('*_Profile  updated_*');
 });
