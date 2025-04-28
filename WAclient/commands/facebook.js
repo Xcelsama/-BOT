@@ -1,4 +1,5 @@
 var { Command } = require('../../lib/command');
+const { extractUrl } = require('../../lib/Functions');
 var config = require('../../config');
 var axios = require('axios');
 
