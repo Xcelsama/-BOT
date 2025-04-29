@@ -195,3 +195,14 @@ Command({
     }
     await msg.reply(text);
 });
+
+Command({
+  cmd_name: 'accept',
+  category: 'admin',
+  desc: 'Accept user from join requests'
+})(async (msg) => {
+  if (!msg.isGroup) return;
+  if (!msg.isAdmin && !msg.fromMe) return;
+  if (!msg.isBotAdmin) return msg.reply('Bot needs to be admin');
+  await msg.AcceptAll(msg.user, 'approve');
+});
