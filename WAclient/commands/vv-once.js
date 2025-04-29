@@ -1,5 +1,5 @@
 const {Command} = require('../../lib/command');
-var { getContentType } = require('@whiskeysockets/baileys');
+var { getContentType } = require('baileys');
 
 Command({
     cmd_name: 'vv',
