@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node -e \"try { require('sharp') } catch (e) { process.exit(1); }\" || yarn add --ignore-engines sharp@0.33.5",
-    "start": "pm2 start index.js --attach --name xastral",
+    "start": "pm2 start . --attach --name xastral",
+    "docker": "pm2-runtime start . --name xastral",
     "stop": "pm2 stop xastral",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +14,7 @@
    "node": ">=20.0.0"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:baileys-duplicated@^1.0.7",
+    "baileys": "github:Diegoson/Baileys",
     "@hapi/boom": "^10.0.1",
     "@google/genai": "^0.9.0",
     "cheerio": "^1.0.0-rc.10",
