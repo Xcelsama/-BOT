@@ -2,6 +2,24 @@ const { Command } = require('../../lib/command');
 const {AddMetadata} = require('./Func/Mp3Data');
 let {extractUrl} = require('../../lib/Functions');
 const axios = require('axios');
+const ytSearch = require('yt-search');
+
+Command({
+  cmd_name: 'yts',
+  category: 'search',
+  desc: 'Search YouTube videos',
+})(async (msg) => {
+  const args = msg.text;
+  if (!args) return msg.reply('Please provide a search term');
+  const { videos } = await ytSearch(args);
+  if (!videos.length) return;
+  const results = videos.slice(0, 5).map(
+    ({ title, videoId, views, timestamp: duration, ago: published, author }, i) =>
+      `*${i + 1}.* ${title}\n${author.name}\n${duration}\n${views} views\n${published}\nhttps://www.youtube.com/watch?v=${videoId}`
+  ).join('\n\n');
+
+  await msg.send(`*YouTube Search:*\n\n${results}`);
+});
 
 Command({
   cmd_name: 'ytmp3',
