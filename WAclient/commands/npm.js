@@ -8,8 +8,8 @@ Command({
     desc: 'Install np'
 })(async (msg) => {
     if(!msg.fromMe && !config.MODS) return;
-    if (msg.args.length === 0) return msg.reply("Please provide the npm");
-    const pk = msg.args.join(" ");
+    if (msg.text.length === 0) return msg.reply("Please provide the npm");
+    const pk = msg.text;
     msg.reply('_Please wait...');
     exec(`npm install ${pk}`, (error, stdout, stderr) => {
         if (error || stderr) {
