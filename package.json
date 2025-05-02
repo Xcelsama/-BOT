@@ -33,6 +33,7 @@
     "pino": "^9.6.0",
     "sharp":  "^0.33.5",
     "simple-git":  "^3.20.0",
+    "yt-search": "latest",
     "mongoose": "^8.13.3",
     "sqlite3": "^5.1.7"
   }
