@@ -14,13 +14,13 @@
    "node": ">=20.0.0"
   },
   "dependencies": {
-    "baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
+    "baileys": "^6.7.16",
     "@hapi/boom": "^10.0.1",
     "@google/genai": "^0.9.0",
     "cheerio": "^1.0.0-rc.10",
     "aptoide-api": "^4.0.7",
     "discord-xp": "^1.1.16",
-    "g-i-s": "github:naxordeve/g-i-s",
+    "g-i-s": "^2.1.7",
     "axios": "^1.8.3",
     "form-data": "latest",
     "file-type": "^16.5.3",
