@@ -1,74 +1,36 @@
 const {Command} = require('../../lib/command');
-const ffmpeg = require('fluent-ffmpeg');
-const fs = require('fs');
-const path = require('path');
+const sharp = require('sharp');
 
 Command({
-    cmd_name: 'convert',
-    aliases: ['conv', 'tomp3', 'tomp4', 'togif'],
-    category: 'tools',
-    desc: 'Convert media files between formats'
+    cmd_name: 'toimg',
+    aliases: ['toimage'],
+    category: 'converter',
+    desc: 'Convert sticker to image'
 })(async (msg) => {
-    if (!msg.quoted) return msg.reply('*Reply to a media msg*');
-    var args = msg.text;
-    const type = args[0]?.toLowerCase() || 'mp3';
-    const stream = await msg.quoted.download();
-    if (!stream) return;
+    if (!msg.quoted) return msg.reply('_Reply to a sticker_');
+    if (!/webp/.test(msg.quoted.type)) return msg.reply('_Reply to a sticker_');
+    const media = await msg.quoted.download();
     let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-        buffer = Buffer.concat([buffer, chunk]);
+    for await (const chunk of media) {
+    buffer = Buffer.concat([buffer, chunk]);}
+    const ctx = await sharp(buffer)
+    .toFormat('png')
+    .toBuffer();
+    await msg.send({ image: ctx });
+});
+
+Command({
+    cmd_name: 'tomp3',
+    aliases: ['mp3'],
+    category: 'converter',
+    desc: 'Convert video to mp3'
+})(async (msg) => {
+    if (!msg.quoted) return msg.reply('_Reply to a video_');
+    if (!/video/.test(msg.quoted.type)) return msg.reply('_Reply to a video_');
+    const media = await msg.quoted.download();
+    let buffer = Buffer.from([]);
+    for await (const chunk of media) {
+    buffer = Buffer.concat([buffer, chunk]);
     }
-    
-    var ctx = path.join(__dirname, './temp', `input_${Date.now()}`);
-    const kf = path.join(__dirname, './temp', `output_${Date.now()}`);
-    fs.writeFileSync(ctx, buffer);
-    try {
-        await new Promise((resolve, reject) => {
-            const conv = ffmpeg(kf);
-            switch(type) {
-                case 'mp3':
-                    conv.toFormat('mp3')
-                        .on('end', resolve)
-                        .on('error', reject)
-                        .save(kf + '.mp3');
-                    break;
-                    
-                case 'mp4':
-                    conv.toFormat('mp4')
-                        .on('end', resolve)
-                        .on('error', reject)
-                        .save(kf + '.mp4');
-                    break;
-                    
-                case 'gif':
-                    conv.toFormat('gif')
-                        .on('end', resolve)
-                        .on('error', reject)
-                        .save(kf + '.gif');
-                    break;
-                    
-                default:
-                    return msg.reply('*formats: mp3, mp4, gif*');
-            }
-        });
-        
-        var dn = fs.readFileSync(kf + '.' + type);
-        switch(type) {
-            case 'mp3':
-                await msg.send({ audio: dn, mimetype: 'audio/mp3' });
-                break;
-            case 'mp4':
-                await msg.send({ video: dn });
-                break;
-            case 'gif':
-                await msg.send({ video: dn, gifPlayback: true });
-                break;
-        }
-        
-    } catch (error) {
-        await msg.reply(error.message);
-    } finally {
-        if (fs.existsSync(ctx)) fs.unlinkSync(ctx);
-        if (fs.existsSync(kf + '.' + type)) fs.unlinkSync(kf + '.' + type);
-    }
+    await msg.send({ audio: buffer,mimetype: 'audio/mp3'});
 });
