@@ -58,4 +58,24 @@ Command({
    }
   }});
 });
-        
+
+Command({
+  cmd_name: 'ytv',
+  aliases: ['ytmp4'],
+  category: 'downloader',
+  desc: 'Download YouTube video'
+})(async (msg) => {
+  const url = msg.text;
+  if (!url || (!url.includes('youtube.com') && !url.includes('youtu.be'))) {
+  return msg.reply('Provide yt url\neg: .ytv https://youtu.be/xxxxx');
+  }
+  const res = await fetchYTV(url);
+  if (!res || !res.url) return msg.reply('invalid url');
+  await msg.send({video: { url: res.url },caption: res.title});
+  async function fetchYTV(url) {
+    const endpoint = `https://lordx.devstackx.in/api/dl/v1/ytv?url=${url}&q=1080p`;
+    const { data } = await axios.get(endpoint);
+    return data;
+  }
+});
+
