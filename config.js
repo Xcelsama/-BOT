@@ -15,6 +15,8 @@ module.exports = {
     GEMINI_API_KEY: process.env.GEMINI_API_KEY || 'AIzaSyCzlWIpR-ljOkX2InphFWau4OESfk_HJyY',
 
     PORT: process.env.PORT || '3000',
+
+    PACKNAME: process.env.PACKNAME || '❤️,Naxor',
     
     MONGODB_URI: process.env.MONGODB_URI || 'mongodb+srv://xastral:naxordeve27@cluster0.xkzaq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', // get url at mongodb.atlas
        
