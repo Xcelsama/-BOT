@@ -1,4 +1,5 @@
 const { Command } = require('../../lib/command');
+var config = require('../../config');
 const {AddMetadata} = require('./Func/Mp3Data');
 let {extractUrl} = require('../../lib/Functions');
 const axios = require('axios');
@@ -48,34 +49,31 @@ Command({
   category: 'downloader',
   desc: 'Download songs from YouTube'
 })(async (msg) => {
-   if (!msg.text) return msg.reply('Send a song name or link');
-   let res = await axios.get(`https://downloaders-sandy.vercel.app/api/v1/yta?query=${msg.text}`);
-   if (res.data.status !== 'true' || !res.data.data) return;
-   let song = res.data.data;
-   let reply = await msg.reply(`*Downloading: ${song.title}...*`);
-   let audio = await AddMetadata(song.downloadUrl, song.thumbnail, { title: song.title, artist: song.uploader });
-   await msg.send({audio, mimetype: 'audio/mpeg', contextInfo: {externalAdReply: {title: song.title,body: 'watch on',thumbnailUrl: song.thumbnail,mediaType: 1, mediaUrl: `https://www.youtube.com/watch?v=${song.videoId}`,sourceUrl: `https://www.youtube.com/watch?v=${song.videoId}`
+  let query = msg.text;
+  if (!msg.text) return msg.reply('_Provide a song name eg .song Big dawgs by HummanKind_');
+  let vid = query;
+  if (!query.startsWith('http')) {
+    let search = await ytSearch(query);
+    if (!search.videos.length) return msg.reply('_Noti found_');
+    vid = search.videos[0].url;
+  } let song, audiobuff;
+  try { let res = await axios.get(`https://downloaders-sandy.vercel.app/api/v1/yta?query=${vid}`);
+    if (res.data.status === 'true' && res.data.data) {
+      song = res.data.data;
+      let metadata = await AddMetadata(song.downloadUrl, song.thumbnail, {
+      title: song.title,
+      artist: song.uploader || 'YouTube'
+      });
+      audiobuff = metadata;
+    } else {
+    }} catch {
+    try { let fallback = await axios.get(`${config.API}/api/download?url=${vid}&type=audio`);
+      song = fallback.data;
+      audiobuff = { url: song.url }; 
+    } catch { return;
+    }}
+   await msg.reply(`*Downloading:* ${song.title}...`);
+   await msg.send({audio: audiobuff,mimetype: 'audio/mpeg',contextInfo: {externalAdReply: {title: song.title,body: 'YouTube Audio',thumbnailUrl: song.thumbnail || '',mediaType: 1,mediaUrl: vid,sourceUrl: vid
    }
-  }});
+ }});
 });
-
-Command({
-  cmd_name: 'ytv',
-  aliases: ['ytmp4'],
-  category: 'downloader',
-  desc: 'Download YouTube video'
-})(async (msg) => {
-  const url = msg.text;
-  if (!url || (!url.includes('youtube.com') && !url.includes('youtu.be'))) {
-  return msg.reply('Provide yt url\neg: .ytv https://youtu.be/xxxxx');
-  }
-  const res = await fetchYTV(url);
-  if (!res || !res.url) return msg.reply('invalid url');
-  await msg.send({video: { url: res.url },caption: res.title});
-  async function fetchYTV(url) {
-    const endpoint = `https://lordx.devstackx.in/api/dl/v1/ytv?url=${url}&q=1080p`;
-    const { data } = await axios.get(endpoint);
-    return data;
-  }
-});
-
