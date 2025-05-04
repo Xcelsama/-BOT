@@ -2,24 +2,32 @@ const { Command } = require('../../lib/command');
 const { Sticker } = require('wa-sticker-formatter');
 var config = require('../../config');
 
+
+
 Command({
     cmd_name: 'take',
-    aliases: ['steal'],
     category: 'tools',
-    desc: 'Convert'
-})(async (msg, conn) => {
-    if (!msg.quoted) return msg.reply('_Reply to an sticker_');
-    const [pack, author] = msg.text.split(',').map(x => x.trim());
-    if (!pack || !author) return msg.reply('_usage:_ take Packname, Author');
-    const media = await msg.quoted.download();
-    const sticker = new Sticker(media, {
-    pack, author,type: 'full',quality: 70,
-    background: 'transparent'
-    });
-
-    await msg.send({ sticker: await sticker.toBuffer() });
+    desc: 'Convert',
+})(async (msg) => {
+        if (!msg.quoted || !msg.quoted.message) return await msg.reply('_Reply to a sticker_');
+        var match = msg.text;
+        let pack = config.PACKNAME;
+        let author = 'NᴀxᴏʀDᴇᴠɪ';
+        if (match) { if (!match.includes('|')) return await msg.reply('_use the correct format: `packname|author`_');
+        let [ux, us] = match.split('|').map((v) => v.trim());
+        if (!ux || !us) return await msg.reply('_Both packname and author must be provided in the format: `packname|author`_');
+        pack = ux;
+        author = us; }
+        const buffer = await msg.quoted.download();
+        if (!buffer) return;
+        const sticker = new Sticker(buffer, {
+        pack,author,type: 'full',quality: 80,id: 'sticker_cmd',background: 'transparent'
+        });
+        const voidi = await sticker.toBuffer();
+        await msg.send({ sticker: voidi });
 });
 
+    
 
 Command({
     cmd_name: 'crop',
