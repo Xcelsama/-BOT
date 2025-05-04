@@ -4,6 +4,7 @@ const {AddMetadata} = require('./Func/Mp3Data');
 let {extractUrl} = require('../../lib/Functions');
 const axios = require('axios');
 const ytSearch = require('yt-search');
+const fetch = require('node-fetch');
 
 Command({
   cmd_name: 'yts',
@@ -78,28 +79,39 @@ Command({
  }});
 });
 
+
 Command({
-  cmd_name: 'ytmp4',
+  cmd_name: 'video',
   aliases: ['ytv'],
   category: 'downloader',
   desc: 'Download YouTube videos'
 })(async (msg) => {
-  let tourl = extractUrl(msg.text);
-    if (!tourl && msg.quoted) {
-        tourl = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
-    }
-    if (!tourl) return msg.reply('_Provide a yt url please_');
-    let { data } = await axios.get(`https://diegoson-astarl.hf.space/api/download`, {
-     params: {
-     url: tourl,
-     type: 'video'
-    },
-     headers: {
-     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
-     }
+  if (!msg.text) return msg.reply('Send a YouTube link');
+  let videoUrl = msg.text;
+
+  try {
+    let res = await fetch(`https://diegoson-astarl.hf.space/api/download?url=${videoUrl}&type=video`, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Accept': 'application/json'
+      }
     });
-    if (!data?.url) return;
-    await msg.reply(`*Downloading:* ${data.title}...`);
+
+    if (!res.ok) {
+    throw new Error(`${res.status}`);
+    }
+
+    let data = await res.json();
+    if (!data?.url) return msg.reply('eish');
     let caption = `===[YOUTUBE]===\n${data.title}\n${data.size}\n\nMade with❤️`;
-    await msg.send({video: { url: data.url },caption,mimetype: 'video/mp4'});
-});  
+    await msg.send({
+      video: { url: data.url },
+      caption,
+      mimetype: 'video/mp4'
+    });
+
+  } catch (e) {
+    console.error(e);
+    msg.reply(`*-- ERROR  [XASTRAL] --*\n\n*Jid:* ${msg.user}\n\n*Error:* ${e.message}\n\n_--made with ❤️--_`);
+  }
+});
