@@ -59,19 +59,58 @@ Command({
     await msg.send({ sticker: await sticker.toBuffer() });
 });
 
-Command({
-    cmd_name: 'transparent',
-    category: 'converter',
-    desc: 'Convert'
-})(async (msg, conn) => {
-    if (!msg.quoted) return msg.reply('_Reply to an stk_');
-    const media = await msg.quoted.download();
-    const sticker = new Sticker(media, {
-    pack: 'Made by',
-    author: 'Xastral',
-    type: 'default',
-    removebg: true,
-    quality: 70
+
+async function removebg(buffer) {
+    return new Promise(async (resolve, reject) => {
+        const image = buffer.toString("base64");
+        let res = await axios.post(
+        "https://us-central1-ai-apps-prod.cloudfunctions.net/restorePhoto", {
+        image: `data:image/png;base64,${image}`,
+        model: "fb8af171cfa1616ddcf1242c093f9c46bcada5ad4cf6f2fbe8b81b330ec5c003",},);
+        const data = res.data?.replace(`"`, "");
+        if (!data) return reject("err");
+        resolve(data);
     });
-    await msg.send({ sticker: await sticker.toBuffer() });
+}
+
+Command({
+    cmd_name: 'removebg',
+    category: 'tools',
+    desc: 'Removes the background from an image',
+})(async (msg) => {
+        if (!msg.quoted || !msg.quoted.message.imageMessage) return await msg.reply('_Reply to an image_');
+        const buffer = await msg.quoted.download();
+        const voidi = await removebg(buffer).catch(err => null);
+        if (!voidi || typeof voidi !== "string") return;
+        const o = await axios.get(voidi, { responseType: 'arraybuffer' });
+        const x = Buffer.from(o.data);
+        await msg.send({ image: x, caption: '_Made with❤️_' });
+    
 });
+
+async function Upscale(img) {
+    const res = await fetch("https://lexica.qewertyy.dev/upscale", {
+        body: JSON.stringify({
+        image_data: Buffer.from(img, "base64"),
+        format: "binary",
+        }),
+        headers: {"Content-Type": "application/json",},
+        method: "POST",
+    });
+    if (!res.ok) return null;
+    return Buffer.from(await res.arrayBuffer());
+}
+
+Command ({
+    cmd_name: 'upscale',
+    aliases: ['hd'],
+    category: 'tools',
+    desc: 'Upscales an image to higher resolution',
+    })(async (msg) => {
+    if (!msg.quoted || !msg.quoted.message.imageMessage) return await msg.reply('_Reply to an image_');
+    const buffer = await msg.quoted.download();
+    const ups = await Upscale(buffer).catch(() => null);
+    if (!ups) return;
+    await smg.send({ image: ups, caption: '_upscaled_' });
+});
+    
