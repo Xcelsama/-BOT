@@ -5,11 +5,37 @@ const moment = require('moment-timezone');
 const { getSystemList } = require('../../lib/systemm');
 const { monospace } = require('../../lib/Functions'); 
 
+
+Command({
+    cmd_name: 'help',
+    alias: ['list'],
+    category: 'core',
+    desc: 'Display command list'
+})(async (msg) => {
+    const commands = getAllCommands();
+    const type = {};
+    
+    commands.forEach(cmd => {
+        if (!type[cmd.category]) type[cmd.category] = [];
+        type[cmd.category].push(cmd);
+    });
+
+    let ctx = `╭─「 *whatsapp-bot* 」\n`;
+    Object.entries(type).forEach(([category, cmds]) => {
+        cmds.forEach(cmd => {
+        ctx += `┃ ${monospace(cmd.cmd_name)}\n`;
+        });
+    });
+    ctx += `╰──────────╼\n`;
+
+    await msg.reply(ctx);
+});
+
 Command({
     cmd_name: 'menu',
     category: 'core',
     desc: 'Display command list'
-})(async (msg, conn) => {
+})(async (msg) => {
     const commands = getAllCommands();
     const type = {};   
     commands.forEach(cmd => {
