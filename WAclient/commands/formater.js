@@ -1,7 +1,7 @@
 const { Command } = require('../../lib/command');
 const { Sticker } = require('wa-sticker-formatter');
 var config = require('../../config');
-
+const fetch = require('node-fetch');
 
 
 Command({
@@ -101,7 +101,7 @@ async function Upscale(img) {
     return Buffer.from(await res.arrayBuffer());
 }
 
-Command ({
+Command({
     cmd_name: 'upscale',
     aliases: ['hd'],
     category: 'tools',
