@@ -1,4 +1,5 @@
 var { Command } = require('../../lib/command');
+var { extractUrl } = require('../../lib/Functions');
 
 Command({
   cmd_name: 'mentionall',
@@ -148,18 +149,6 @@ Command({
 });
 
 Command({
-    cmd_name: 'del',
-    aliases: ['delete'],
-    category: 'admin',
-    desc: 'Delete quoted message'
-})(async (msg) => {
-    if (!msg.fromMe) return;
-    if (!msg.quoted) return msg.reply('Reply to a message to delete');
-    if (!msg.quoted.fromMe) return msg.reply('I can only delete my own messages');
-    await msg.reply({ delete: msg.quoted.key });
-});
-
-Command({
     cmd_name: 'delall',
     aliases: ['clearall'],
     category: 'admin',
@@ -197,12 +186,31 @@ Command({
 });
 
 Command({
-  cmd_name: 'accept',
-  category: 'admin',
-  desc: 'Accept user from join requests'
+    cmd_name: 'leave',
+    alisas: ['left'],
+    category: 'admin',
+    desc: 'Make bot leave the group'
 })(async (msg) => {
-  if (!msg.isGroup) return;
-  if (!msg.isAdmin && !msg.fromMe) return;
-  if (!msg.isBotAdmin) return msg.reply('Bot needs to be admin');
-  await msg.AcceptAll(msg.user, 'approve');
+    if (!msg.isGroup) return;
+    if (!msg.fromMe) return;
+    await msg.groupLeave(msg.user);
+});
+
+Command({
+    cmd_name: 'join',
+    category: 'owner',
+    desc: 'Join a group via invite link'
+})(async (msg) => {
+    if (!msg.fromMe) return;
+    var args = extractUrl(msg.text);
+    if (!args && msg.quoted) {
+    args = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || ''); }
+    if (!args) return msg.reply('_Provide group link_');
+    let code = args.split('whatsapp.com/')[1];
+    if (!code) return msg.reply('_Invalid group link_');
+    try { await msg.groupJoin(code);
+    await msg.reply('_Group joined_');
+    } catch (error) {
+    await msg.reply('oops');
+    }
 });
