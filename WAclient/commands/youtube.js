@@ -89,11 +89,14 @@ Command({
         tourl = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
     }
     if (!tourl) return msg.reply('_Provide a yt url please_');
-    let { data } = await axios.get(`${config.API}/api/download`, {
-      params: {
-        url: tourl,
-        type: 'video'
-      }
+    let { data } = await axios.get(`https://diegoson-astarl.hf.space/api/download`, {
+     params: {
+     url: tourl,
+     type: 'video'
+    },
+     headers: {
+     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
+     }
     });
     if (!data?.url) return;
     await msg.reply(`*Downloading:* ${data.title}...`);
