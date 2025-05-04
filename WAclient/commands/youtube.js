@@ -81,37 +81,22 @@ Command({
 
 
 Command({
-  cmd_name: 'video',
+  cmd_name: 'ytmp4',
   aliases: ['ytv'],
   category: 'downloader',
-  desc: 'Download YouTube videos'
+  desc: 'Download YouTube video as MP4'
 })(async (msg) => {
-  if (!msg.text) return msg.reply('Send a YouTube link');
-  let videoUrl = msg.text;
-
-  try {
-    let res = await fetch(`https://diegoson-astarl.hf.space/api/download?url=${videoUrl}&type=video`, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Accept': 'application/json'
-      }
-    });
-
-    if (!res.ok) {
-    throw new Error(`${res.status}`);
-    }
-
-    let data = await res.json();
-    if (!data?.url) return msg.reply('eish');
-    let caption = `===[YOUTUBE]===\n${data.title}\n${data.size}\n\nMade with❤️`;
-    await msg.send({
-      video: { url: data.url },
-      caption,
-      mimetype: 'video/mp4'
-    });
-
-  } catch (e) {
-    console.error(e);
-    msg.reply(`*-- ERROR  [XASTRAL] --*\n\n*Jid:* ${msg.user}\n\n*Error:* ${e.message}\n\n_--made with ❤️--_`);
+  let url = extractUrl(msg.text);
+    if (!url && msg.quoted) {
+        url = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
   }
+  if (!url) return msg.reply("_Please provide a yt url_");
+  const api = `https://lordx.devstackx.in/api/dl/yt/v1/ytv?url=${url}`;
+  const res = await fetch(api);
+  if (!res.ok) return;
+  const title = res.headers.get("title") || "YouTube";
+  const size = res.headers.get("size") || "infinity";
+  const buffer = await res.arrayBuffer();
+  await msg.send({video: Buffer.from(buffer),caption: `*${title}*\n\n*Size:* ${size}`});
+
 });
