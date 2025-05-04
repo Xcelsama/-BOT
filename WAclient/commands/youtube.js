@@ -77,3 +77,26 @@ Command({
    }
  }});
 });
+
+Command({
+  cmd_name: 'ytmp4',
+  aliases: ['ytv'],
+  category: 'downloader',
+  desc: 'Download YouTube videos'
+})(async (msg) => {
+  let tourl = extractUrl(msg.text);
+    if (!tourl && msg.quoted) {
+        tourl = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || '');
+    }
+    if (!tourl) return msg.reply('_Provide a yt url please_');
+    let { data } = await axios.get(`${config.API}/api/download`, {
+      params: {
+        url: tourl,
+        type: 'video'
+      }
+    });
+    if (!data?.url) return;
+    await msg.reply(`*Downloading:* ${data.title}...`);
+    let caption = `===[YOUTUBE]===\n${data.title}\n${data.size}\n\nMade with❤️`;
+    await msg.send({video: { url: data.url },caption,mimetype: 'video/mp4'});
+});  
