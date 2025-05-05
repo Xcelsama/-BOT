@@ -9,22 +9,16 @@ Command({
 })(async (msg) => {
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return;
-    var args = msg.text;
+    var args = msg.text.toLowerCase();
+    if (!['on', 'off'].includes(args)) return msg.reply('Use on or off');
     let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
     if (!args.length) {
+        group.welcome = true;
         group.welcome = !group.welcome;
         await group.save();
         return msg.reply(`*Welcome msg ${group.welcome ? 'enabled' : 'disabled'}*`);
-    }
-    
-    const cmd = args.toLowerCase().trim();
-    if (cmd === 'on') {
-        group.welcome = true;
-        await group.save();
-        return msg.reply('*Welcome message enabled*');
-    }
-    
-    if (cmd === 'off') {
+    }   return msg.reply('*Welcome message enabled*');
+    }  if (args) {
         group.welcome = false;
         await group.save();
         return msg.reply('*Welcome message disabled*');
