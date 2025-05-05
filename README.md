@@ -8,7 +8,6 @@
    LANG=en
    MONGODB_URI= url string
    GROK_API= 
-   XP_SYSTEM=false/true autolevel
    OWNER_NUM= ×××××××××
    MODS=××××××,××××××,×××××
    GEMINI_API_KEY=
@@ -20,7 +19,7 @@
    To start the bot, run:
 
    ```sh
-   pm2 start index.js --name xastarl --attach --time
+   pm2 start . --name xastarl --attach --time
    ```
 
    To stop the bot, run:
@@ -28,3 +27,7 @@
    ```sh
    pm2 stop xastarl
    ```
+
+  ## Keys
+
+  [Scan](https://hastebin-pair.onrender.com)
