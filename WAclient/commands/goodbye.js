@@ -1,6 +1,5 @@
-
 const {Command} = require('../../lib/command');
-const Group = require('../../lib/DB/schemas/GroupSchema');
+const Group = require('../../lib/models/schemas/GroupSchema');
 
 Command({
     cmd_name: 'goodbye',
