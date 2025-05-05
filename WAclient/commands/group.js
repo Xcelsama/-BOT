@@ -254,4 +254,4 @@ Command({
     } catch (error) {
     return msg.reply('_oopez_');
     }
-});,
+});
