@@ -11,7 +11,7 @@ Command({
   if (!msg.isGroup) return;
   if (!msg.isAdmin && !msg.fromMe) return;
   const args = msg.text.toLowerCase();
-  if (!['on', 'off'].includes(args)) return msg.reply('Use on or off');
+  if (!['on', 'off'].includes(args)) return msg.reply('use:\n> welcome on\n> welcome off');
   let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
   if (args === 'on') {
     group.welcome = true;
@@ -33,7 +33,7 @@ Command({
   if (!msg.isGroup) return;
   if (!msg.isAdmin && !msg.fromMe) return;
   const args = msg.text.toLowerCase();
-  if (!['on', 'off'].includes(args)) return msg.reply('Use on or off');
+  if (!['on', 'off'].includes(args)) return msg.reply('use:\n> goodbye on\n> goodbye off');
   let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
   if (args === 'on') {
     group.goodbye = true;
