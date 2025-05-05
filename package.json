@@ -25,6 +25,7 @@
     "form-data": "latest",
     "file-type": "^16.5.3",
     "node-fetch": "^2.6.7",
+    "node-cache": "^5.1.2",
     "wa-sticker-formatter": "^4.4.4",
     "node-id3": "^0.2.9",
     "dotenv": "^16.4.5",
