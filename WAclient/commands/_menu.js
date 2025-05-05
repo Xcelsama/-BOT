@@ -8,7 +8,7 @@ const { monospace } = require('../../lib/Functions');
 
 Command({
     cmd_name: 'help',
-    alias: ['list'],
+    aliases: ['list'],
     category: 'core',
     desc: 'Display command list'
 })(async (msg) => {
