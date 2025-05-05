@@ -1,4 +1,4 @@
-const Call = require('../../lib/DB/schemas/CallSchema');
+const Call = require('../../lib/models/schemas/CallSchema');
 const { Command } = require('../../lib/command');
 
 Command({
