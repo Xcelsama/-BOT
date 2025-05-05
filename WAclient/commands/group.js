@@ -148,28 +148,6 @@ Command({
     await msg.tagAll(msg.text);
 });
 
-Command({
-    cmd_name: 'delall',
-    aliases: ['clearall'],
-    category: 'admin',
-    desc: 'Delete all bot messages'
-})(async (msg) => {
-    if (!msg.isGroup) return;
-    if (!msg.isAdmin && !msg.fromMe) return;
-    try {
-        const messages = await msg.loadMessages(msg.user);
-        let deleted = 0;
-        for (const message of messages) {
-            if (message.key.fromMe) {
-                await msg.reply({ delete: message.key });
-                deleted++;
-            }
-        }
-        await msg.reply(`Successfully deleted ${deleted} messages`);
-    } catch (error) {
-        await msg.reply(error.message);
-    }
-});
 
 Command({
     cmd_name: 'getjids',
@@ -214,3 +192,66 @@ Command({
     await msg.reply('oops');
     }
 });
+
+Command({
+    cmd_name: 'requests',
+    category: 'admin',
+    desc: 'List all pending join requests'
+})(async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
+    const requests = await msg.getRequestList(msg.user);
+    if (!requests.length) return msg.reply('_No pending requests_');
+    let text = '*Pending Request*\n\n';
+    requests.forEach((req, i) => {
+        text += `${i + 1}. @${req.jid.split('@')[0]}\n`;
+    });
+    await msg.reply(text, { mentions: requests.map(r => r.jid) });
+});
+
+Command({
+    cmd_name: 'accept',
+    category: 'admin',
+    desc: 'Accept join requests'
+})(async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
+    const user = msg.quoted?.sender || msg.mentions[0];
+    if (!user) return msg.reply('Tag or reply to someone to accept');
+    await msg.handleRequest([user], 'approve');
+    return msg.reply(`@${user.split('@')[0]} request accepted`, { mentions: [user] });
+});
+
+Command({
+    cmd_name: 'reject',
+    category: 'admin',
+    desc: 'Reject join requests'
+})(async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin && !msg.fromMe) return;
+    if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
+    const user = msg.quoted?.sender || msg.mentions[0];
+    if (!user) return msg.reply('Tag or reply to someone to reject');
+    await msg.handleRequest([user], 'reject');
+    return msg.reply(`@${user.split('@')[0]} request rejected`, { mentions: [user] });
+});
+
+Command({
+    cmd_name: 'setgpp',
+    category: 'admin',
+    desc: 'Set full group profile picture'
+})(async (msg) => {
+    if (!msg.isGroup) return;
+    if (!msg.isAdmin) return;
+    if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
+    if (!msg.quoted || !msg.quoted.type === 'imageMessage') 
+    return msg.reply('_Reply to an image to set as group profile picture_');
+    try { const media = await msg.quoted.download();
+    await msg.setGroupPP(media);
+    return msg.reply('_group profile pp update_');
+    } catch (error) {
+    return msg.reply('_oopez_');
+    }
+});,
