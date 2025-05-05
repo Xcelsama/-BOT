@@ -237,21 +237,3 @@ Command({
     await msg.handleRequest([user], 'reject');
     return msg.reply(`@${user.split('@')[0]} request rejected`, { mentions: [user] });
 });
-
-Command({
-    cmd_name: 'setgpp',
-    category: 'admin',
-    desc: 'Set full group profile picture'
-})(async (msg) => {
-    if (!msg.isGroup) return;
-    if (!msg.isAdmin) return;
-    if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
-    if (!msg.quoted || !msg.quoted.type === 'imageMessage') 
-    return msg.reply('_Reply to an image to set as group profile picture_');
-    try { const media = await msg.quoted.download();
-    await msg.setGroupPP(media);
-    return msg.reply('_group profile pp update_');
-    } catch (error) {
-    return msg.reply('_oopez_');
-    }
-});
