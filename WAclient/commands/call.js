@@ -9,7 +9,7 @@ Command({
 })(async (msg) => {
     if (!msg.fromMe) return;
     const action = msg.text.toLowerCase();
-    if (!['on', 'off'].includes(action)) return msg.reply('Use on or off');
+    if (!['on', 'off'].includes(action)) return msg.reply('use:\n> call on\n> call off');
     const settings = await Call.findOne({}) || await new Call({}).save();
     settings.globalAutoReject = action === 'on';
     await settings.save();
