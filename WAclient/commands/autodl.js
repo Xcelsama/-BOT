@@ -1,8 +1,8 @@
-var { extractUrl, igdl } = require('../../lib/Functions');
+/*var { extractUrl, igdl } = require('../../lib/Functions');
 var { Command } = require('../../lib/command');
 
 Command({
-  on: 'text'
+  
 })(async (msg) => {
   const url = extractUrl(msg.body);
   if (!url || !url.includes('instagram.com')) return;
@@ -20,3 +20,4 @@ Command({
   }
 });
       
+*/
