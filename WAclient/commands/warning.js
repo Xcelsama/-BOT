@@ -8,7 +8,7 @@ Command({
 })(async (msg) => {
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return;
-    if !(msg.isBotAdmin) return;
+    if (!msg.isBotAdmin) return;
     const x = msg.quoted?.sender || msg.mentions[0];
     if (!x) return msg.reply('_Tag or reply to a user_');
     const reason = msg.text || '_no reason_';
