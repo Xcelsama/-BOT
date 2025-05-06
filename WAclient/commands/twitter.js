@@ -9,7 +9,9 @@ Command({
     category: 'downloader',
     desc: 'Download Twitter/X videos'
 })(async (msg) => {
-    const url = extractUrl(msg.text) || (msg.quoted && extractUrl(msg.quoted.text));
+    let url = extractUrl(msg.text);
+    if (!url && msg.quoted) {
+    url = extractUrl(msg.quoted.message?.conversation || msg.quoted.message?.extendedTextMessage?.text || ''); }
     if (!url) return msg.reply('*Please provide a Twitter/X URL*');
     const xtwt = async (url) => {
     try { const res = await axios.post('https://twmate.com/', new URLSearchParams({
