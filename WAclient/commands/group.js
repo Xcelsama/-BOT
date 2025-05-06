@@ -14,13 +14,13 @@ Command({
   if (!['on', 'off'].includes(args)) return msg.reply('use:\n> welcome on\n> welcome off');
   let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
   if (args === 'on') {
-    group.welcome = true;
-    await group.save();
-    return msg.reply('*Welcome message enabled*');
+  group.welcome = true;
+  await group.save();
+  return msg.reply('*Welcome message enabled*');
   } if (args === 'off') {
-    group.welcome = false;
-    await group.save();
-    return msg.reply('*Welcome message disabled*');
+  group.welcome = false;
+  await group.save();
+  return msg.reply('*Welcome message disabled*');
   }
 });
 
@@ -36,13 +36,13 @@ Command({
   if (!['on', 'off'].includes(args)) return msg.reply('use:\n> goodbye on\n> goodbye off');
   let group = await Group.findOne({ id: msg.user }) || await new Group({ id: msg.user }).save();
   if (args === 'on') {
-    group.goodbye = true;
-    await group.save();
-    return msg.reply('*Goodbye message enabled*');
+  group.goodbye = true;
+  await group.save();
+  return msg.reply('*Goodbye message enabled*');
   } if (args === 'off') {
-    group.goodbye = false;
-    await group.save();
-    return msg.reply('*Goodbye message disabled*');
+  group.goodbye = false;
+  await group.save();
+  return msg.reply('*Goodbye message disabled*');
   }
 });
 
@@ -295,10 +295,10 @@ Command({
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return;
     if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
-    const user = msg.quoted?.sender || msg.mentions[0];
-    if (!user) return msg.reply('Tag or reply to someone to accept');
-    await msg.handleRequest([user], 'approve');
-    return msg.reply(`@${user.split('@')[0]} request accepted`, { mentions: [user] });
+    const requests = await msg.getRequestList(msg.user);
+    if (!requests.length) return msg.reply('_No pending requests_');
+    await msg.handleRequest(requests.map(r => r.jid), 'approve');
+    return msg.reply(`Accepted all ${requests.length} pending requests`);
 });
 
 Command({
@@ -309,8 +309,10 @@ Command({
     if (!msg.isGroup) return;
     if (!msg.isAdmin && !msg.fromMe) return;
     if (!msg.isBotAdmin) return msg.reply('_Bot needs to be admin_');
-    const user = msg.quoted?.sender || msg.mentions[0];
-    if (!user) return msg.reply('Tag or reply to someone to reject');
+    const number = msg.text.replace(/[^0-9]/g, '');
+    if (!number) return msg.reply('_Provide the request number to reject_');
+    const user = number + '@s.whatsapp.net';
     await msg.handleRequest([user], 'reject');
-    return msg.reply(`@${user.split('@')[0]} request rejected`, { mentions: [user] });
+    return msg.reply(`@${number} request rejected`, { mentions: [user] });
 });
+    
