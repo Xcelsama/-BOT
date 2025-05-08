@@ -1,6 +1,6 @@
-const fetch= require('node-fetch');
+const fetch = require('node-fetch');
 const config = require('../../config');
-var {Command} = require('../../lib/command');
+var { Command } = require('../../lib/command');
 
 Command({
   cmd_name: 'lyrics',
@@ -12,10 +12,14 @@ Command({
   let query = args;
   let url = `${config.API}/api/lyrics?q=${query}`;
   let res = await fetch(url);
-  if (!res.ok) return;
+  if (!res.ok) return msg.reply('_');
   let data = await res.json();
-  if (!data.[0].plainLyrics) return msg.reply('_nothing_');
-  let caption = `*${data.trackName}*\n*Artist*: *${data.artistName}*\n\n${data.[0].plainLyrics}`.trim();
+  if (!data[0]?.plainLyrics) return msg.reply('_nothing_');
+
+  let song = data[0];
+  let caption = `*${song.trackName}*\n*Artist*: *${song.artistName}*\n\n${song.plainLyrics}`.trim();
   if (caption.length > 4096) caption = caption.slice(0, 4093) + '...';
+
   await msg.send(caption);
 });
+   
