@@ -1,22 +1,21 @@
-const axios = require('axios');
-var {Command} = require('../../lib/command.js');
+const fetch= require('node-fetch');
+const config = require('../../config');
+var {Command} = require('../../lib/command');
 
 Command({
   cmd_name: 'lyrics',
-  category: 'search',
-  desc: 'Get lyrics by song name'
-})(async (msg, text) => {
-  var text = msg.text;
-  if (!text) return msg.reply('Please provide a song name\nExample: lyrics Dior by Pop Smoke');
-    var url = `https://www.archive-ui.biz.id/api/search/lyrics?query=${text}`;
-    const { data } = await axios.get(url);
-    if (!data.status || !data.result) return;
-    const res = data.result;
-    const caption = `*${res.title}*\n\n${res.lyrics.trim()}`;
-    if (res.thumb) {
-    await msg.send({ image: { url: res.thumb }, caption });
-    } else {
-      msg.reply(caption);
-    }
+  category: 'music',
+  desc: 'Get lyrics for a song'
+})(async (msg) => {
+  let args = msg.text;
+  if (!args) return msg.reply('Please provide a song name or query, e.g., `.lyrics Dior by Pop Smoke`');
+  let query = args;
+  let url = `${config.API}/api/lyrics?q=${query}`;
+  let res = await fetch(url);
+  if (!res.ok) return;
+  let data = await res.json();
+  if (!data.plainLyrics) return msg.reply('_nothing_');
+  let caption = `*${data.trackName}*\n*Artist*: *${data.artistName}*\n\n${data.plainLyrics}`.trim();
+  if (caption.length > 4096) caption = caption.slice(0, 4093) + '...';
+  await msg.send(caption);
 });
-      
