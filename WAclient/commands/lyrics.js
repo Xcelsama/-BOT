@@ -14,8 +14,8 @@ Command({
   let res = await fetch(url);
   if (!res.ok) return;
   let data = await res.json();
-  if (!data.plainLyrics) return msg.reply('_nothing_');
-  let caption = `*${data.trackName}*\n*Artist*: *${data.artistName}*\n\n${data.plainLyrics}`.trim();
+  if (!data.[0].plainLyrics) return msg.reply('_nothing_');
+  let caption = `*${data.trackName}*\n*Artist*: *${data.artistName}*\n\n${data.[0].plainLyrics}`.trim();
   if (caption.length > 4096) caption = caption.slice(0, 4093) + '...';
   await msg.send(caption);
 });
