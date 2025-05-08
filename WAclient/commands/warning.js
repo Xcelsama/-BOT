@@ -19,7 +19,7 @@ Command({
     return msg.reply(`@${x.split('@')[0]} has been removed`, { mentions: [x] }); }
     await new Warn({id: msg.user,userid: x,reason: reason,warnedBy: msg.sender
     }).save();
-    return msg.reply(`「 *warning* 」\n@${x.split('@')[0]}: ${ctx.length + 1}/3\n*Reason*: ${reason}`, { mentions: [x] });
+    return msg.reply(`「 *warning* 」\n\n@${x.split('@')[0]}: ${ctx.length + 1}/3\n\n*Reason*: ${reason}`, { mentions: [x] });
 });
 
 Command({
