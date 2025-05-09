@@ -18,6 +18,28 @@ Command({
 });
 
 Command({
+    on: 'message',
+    category: 'system'
+})(async (msg) => {        
+const af = await Afk.findOne({ id: msg.sender });
+        if (af && (msg.fromMe)) {
+            const duration = Math.floor((Date.now() - af.timestamp) / 1000);
+            await msg.reply(`*Welcome back*\nYou were AFK for ${duration} seconds`);
+            await Afk.deleteOne({ id: msg.sender });
+        }   if (msg.mentions && msg.mentions.length > 0) {
+            for (const mention of msg.mentions) {
+                const men = await Afk.findOne({ id: mention });
+                if (men) {
+                    const duration = Math.floor((Date.now() - men.timestamp) / 1000);
+                    await msg.reply(`*@${mention.split('@')[0]} is currently AFK*\n\n*Reason:* ${men.reason}\n*Duration:* ${duration} _seconds_`, {
+                        mentions: [mention]
+                    });
+                }
+            }
+        }
+});
+
+Command({
     cmd_name: 'resetafk',
     category: 'owner',
     desc: 'Reset AFK status (Owner only)'
@@ -34,25 +56,3 @@ Command({
             await msg.reply('*Reset AFK status*');
         }
 });
-
-Command({
-on: 'message'
-})(async (msg) => {
-  const af = await Afk.findOne({ userId: msg.sender });
-  if (af && (msg.fromMe || msg.sender.split('@')[0] === config.OWNER_NUM)) {
-  const duration = Math.floor((Date.now() - af.timestamp) / 1000);
-  await msg.reply(`*Welcome back*\nYou were AFK for ${duration} seconds`);
-  await Afk.deleteOne({ id: msg.sender });
-  } if (msg.mentions && msg.mentions.length > 0) {
-            for (const mention of msg.mentions) {
-                const ctx = await Afk.findOne({ id: mention });
-                if (ctx) {
-                    const duration = Math.floor((Date.now() - ctx.timestamp) / 1000);
-                    await msg.reply(`@${mention.split('@')[0]} is currently AFK\n\nReason: ${ctx.reason}\nDuration: ${duration} seconds`, {
-                        mentions: [mention]
-                    });
-                }
-            }
-        }
-});
-          
