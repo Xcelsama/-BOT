@@ -1,6 +1,6 @@
-const fetch = require('node-fetch');
-const config = require('../../config');
 var { Command } = require('../../lib/command');
+const Genius = require("genius-lyrics");
+var Client = new Genius.Client("HOAnWV-f4dqf2id6JLyZsjHvcEofEYRZePkc3GLiFePZDecBgsvkJvN2YcfVWBjI"); 
 
 Command({
   cmd_name: 'lyrics',
@@ -9,17 +9,10 @@ Command({
 })(async (msg) => {
   let args = msg.text;
   if (!args) return msg.reply('Please provide a song name or query, e.g., `.lyrics Dior by Pop Smoke`');
-  let query = args;
-  let url = `${config.API}/api/lyrics?q=${query}`;
-  let res = await fetch(url);
-  if (!res.ok) return msg.reply('_');
-  let data = await res.json();
-  if (!data[0]?.plainLyrics) return msg.reply('_nothing_');
-
-  let song = data[0];
-  let caption = `*${song.trackName}*\n*Artist*: *${song.artistName}*\n\n${song.plainLyrics}`.trim();
-  if (caption.length > 4096) caption = caption.slice(0, 4093) + '...';
-
-  await msg.send(caption);
-});
-   
+  var find = await Client.songs.search(args);
+  var x = find[0];
+  var ctx = x._raw.header_image_url
+  var title = x._raw.primary_artist_names + " - " + x._raw.title
+  var lyrics = await x.lyrics();
+  await msg.send({ image:{ url:ctx},caption: title + "\n\n" + lyrics });
+ });
