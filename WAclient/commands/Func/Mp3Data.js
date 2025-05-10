@@ -7,7 +7,7 @@ async function toBuffer(stream) {
   return Buffer.concat(chunks);
 }
 
-async function AddMetadata(audio_url, img_url, { title, artist = 'Diegoson', album = 'X Astral' }) {
+async function AddMetadata(audio_url, img_url, { title, artist = 'naxordeve', album = 'xastral.com' }) {
   const [audio, cover] = await Promise.all([
     axios({ url: audio_url, responseType: 'stream' }).then(res => toBuffer(res.data)),
     axios({ url: img_url, responseType: 'arraybuffer' }).then(res => res.data),
