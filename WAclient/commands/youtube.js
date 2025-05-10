@@ -42,7 +42,7 @@ Command({
       { title: result.title, artist: result.uploader}
     );
   
-    await msg.send({ audio: toAudio,mimetype: 'audio/mpeg',fileName: `${result.title}.mp3`, externalAdReply: {title: result.title, body: 'Duration: ' + result.duration,  mediaType: 2,thumbnailUrl: result.thumbnail,mediaUrl: `https://youtube.com/watch?v=${result.id}`
+    await msg.send({ audio: toAudio, mimetype: 'audio/mpeg',fileName: `${result.title}.mp3`, contextInfo: {externalAdReply: {title: result.title, body: 'Duration: ' + result.duration,  mediaType: 2,thumbnailUrl: result.thumbnail,mediaUrl: `https://youtube.com/watch?v=${result.id}`
       }
     });
 });
