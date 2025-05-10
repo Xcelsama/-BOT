@@ -64,7 +64,7 @@ Command({
   const video = search.result[0];
   if (!video) return msg.reply('_nothing_');
   url = video.url;
-  } const download = await savetube.download(url, '360');
+  } const download = await savetube.download(url, '720');
   if (!download.status) return msg.reply(download.error);
   const result = download.result;
   await msg.send({ video: { url: result.download },caption: `*Title:* ${result.title}\n*Quality:* ${result.quality}p\n*Duration:* ${result.duration}`,});  
