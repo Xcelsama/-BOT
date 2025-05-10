@@ -1,6 +1,6 @@
-var { Command } = require('../../lib/command');
+var { Command } = require('../../lib/');
 const Genius = require("genius-lyrics");
-var Client = new Genius.Client("7DCHx-HgkpCLVU8UtjzJRcOUvWMqM5rV1auUj4pKT5fB6SrSCaWAFPujnfzvfy2v");
+var Client = new Genius.Client("jRks96Rxyfx5U4WkMpmlafYjczSsFVovfq2P-HvbtwLN25JuvNPbF43Sz3xd7d8s");
 
 Command({
   cmd_name: 'lyrics',
