@@ -42,7 +42,7 @@ Command({
       { title: result.title, artist: result.uploader}
     );
   
-    await msg.send({ audio: toAudio, mimetype: 'audio/mpeg',fileName: `${result.title}.mp3`, contextInfo: {externalAdReply: {title: result.title, body: 'Duration: ' + result.duration,  mediaType: 2,thumbnailUrl: result.thumbnail,mediaUrl: `https://youtube.com/watch?v=${result.id}`
+    await msg.send({ audio: toAudio, mimetype: 'audio/mpeg',fileName: `${result.title}.mp3`, contextInfo: {externalAdReply: {title: result.title, body: 'Duration: ' + result.duration,thumbnailUrl: result.thumbnail, mediaType: 1, mediaUrl: `https://youtube.com/watch?v=${result.id}`
       }
       }                                                                                                
     })
@@ -64,7 +64,7 @@ Command({
   const video = search.result[0];
   if (!video) return msg.reply('_nothing_');
   url = video.url;
-  } const download = await savetube.download(url, '720');
+  } const download = await savetube.download(url, '1080');
   if (!download.status) return msg.reply(download.error);
   const result = download.result;
   await msg.send({ video: { url: result.download },caption: `*Title:* ${result.title}\n*Quality:* ${result.quality}p\n*Duration:* ${result.duration}`,});  
