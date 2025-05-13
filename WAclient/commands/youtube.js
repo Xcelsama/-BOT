@@ -11,7 +11,7 @@ Command({
   if (!args) return msg.reply('Please provide a search term');
   const { videos } = await ytSearch(args);
   if (!videos.length) return;
-  const results = videos.slice(0, 5).map(
+  const results = videos.slice(0, 10).map(
     ({ title, videoId, views, timestamp: duration, ago: published, author }, i) =>
       `*${i + 1}.* ${title}\n${author.name}\n${duration}\n${views} views\n${published}\nhttps://www.youtube.com/watch?v=${videoId}`
   ).join('\n\n');
@@ -64,7 +64,7 @@ Command({
   const video = search.result[0];
   if (!video) return msg.reply('_nothing_');
   url = video.url;
-  } const download = await savetube.download(url, '1080');
+  } const download = await savetube.download(url, '720');
   if (!download.status) return msg.reply(download.error);
   const result = download.result;
   await msg.send({ video: { url: result.download },caption: `*Title:* ${result.title}\n*Quality:* ${result.quality}p\n*Duration:* ${result.duration}`,});  
