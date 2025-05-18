@@ -3,8 +3,8 @@ var Toggle = (x) => x === "true";
 
 module.exports = {
     PREFIX: new RegExp(process.env.PREFIX || '^[!/.#?~]'),
-    OWNER_NUM: process.env.OWNER_NUMBER || '27686881509',
-    MODS: (process.env.MODS || '27686881509').split(',').filter(Boolean),
+    OWNER_NUM: process.env.OWNER_NUMBER || '',
+    MODS: (process.env.MODS || '').split(',').filter(Boolean),
     
     BOT_NAME: process.env.BOT_NAME || 'X-ASTRAL',
     
