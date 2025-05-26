@@ -10,7 +10,7 @@ async function upscale(filePath) {
     const fn = Math.random().toString(36).slice(2, 8) + '.' + ext;
     const { data } = await axios.post("https://pxpic.com/getSignedUrl", {
         folder: "uploads",
-        fileName
+        fn
     }, {
         headers: {
             "Content-Type": "application/json"
