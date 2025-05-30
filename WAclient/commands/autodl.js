@@ -1,23 +1,17 @@
-/*var { extractUrl, igdl } = require('../../lib/Functions');
-var { Command } = require('../../lib/command');
+const { Command } = require('../../lib/');
+const Group = require('../../lib/models/schemas/GroupSchema');
 
 Command({
-  
+  cmd_name: 'autodl',
+  category: 'admin',
+  desc: ''
 })(async (msg) => {
-  const url = extractUrl(msg.body);
-  if (!url || !url.includes('instagram.com')) return;
-  let res;
-  try { res = await igdl(url);
-  } catch (e) {
-  return msg.reply('yh neh');
-  } if (!res || !res.links.length) return;
-  for (const link of res.links) {
-    if (res.type === 'video') {
-      await msg.send({ video: { url: link }, caption: 'Video❤️' });
-    } else {
-      await msg.send({ image: { url: link }, caption: 'Photo❤️' });
-    }
-  }
+  if (!msg.isGroup) return;
+  if (!msg.isAdmin && fromMe) return;
+  let db = await Group.findOne({ id: msg.user });
+  if (!db) {
+  db = new Group({ id: msg.user, autodl: false }); }
+  db.autodl = !db.autodl;
+  await db.save();
+  await msg.reply(`autodl been *${db.autodl ? 'enabled' : 'disabled'}*`);
 });
-      
-*/
