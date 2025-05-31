@@ -1,5 +1,5 @@
-const { extractUrl, savetube } = require('../../../lib/');
-const Group = require('../../../lib/models/schemas/GroupSchema');
+const { extractUrl, savetube } = require('../../lib/');
+const Group = require('../../lib/models/schemas/GroupSchema');
 const Ytml = async (msg) => {
   if (!msg.isGroup) return;
   const db = await Group.findOne({ id: msg.user });
