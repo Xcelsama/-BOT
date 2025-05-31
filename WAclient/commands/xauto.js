@@ -1,6 +1,6 @@
-const { extractUrl } = require('../../../lib/');
+const { extractUrl } = require('../../lib/');
 const { twitter } = require('./Func/twitterDl');
-const Group = require('../../../lib/models/schemas/GroupSchema');
+const Group = require('../../lib/models/schemas/GroupSchema');
 
 const xDl = async (msg) => {
   if (!msg.isGroup) return;
