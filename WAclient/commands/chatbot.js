@@ -10,7 +10,7 @@ Command({
   if (msg.isGroup && !msg.isAdmin && !msg.fromMe) return;
   const args = msg.text.toLowerCase().split(' ');
   const action = args[0];
-  const chatId = msg.isGroup ? msg.fromMe;
+  const chatId = msg.isGroup ? msg.user : msg.sender;
   let aiChat = await AiChat.findOne({ id: chatId });
    if (!aiChat) {
       aiChat = new AiChat({ id: chatId });
