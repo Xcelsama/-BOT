@@ -7,7 +7,7 @@ Command({
   desc: ''
 })(async (msg) => {
   if (!msg.isGroup) return;
-  if (!msg.isAdmin && fromMe) return;
+  if (!msg.isAdmin && msg.fromMe) return;
   let db = await Group.findOne({ id: msg.user });
   if (!db) {
   db = new Group({ id: msg.user, autodl: false }); }
