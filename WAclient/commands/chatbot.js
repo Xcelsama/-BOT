@@ -7,13 +7,13 @@ Command({
   category: 'AI',
   desc: 'Toggle AI chat feature on/off'
 })(async (msg) => {
-  if (!msg.isGroup) return;
-  if (!msg.isAdmin && msg.fromMe) return;
+  if (msg.isGroup && !msg.isAdmin && !msg.fromMe) return;
   const args = msg.text.toLowerCase().split(' ');
   const action = args[0];
-  let aiChat = await AiChat.findOne({ id: msg.user });
+  const chatId = msg.isGroup ? msg.fromMe;
+  let aiChat = await AiChat.findOne({ id: chatId });
    if (!aiChat) {
-      aiChat = new AiChat({ id: msg.user });
+      aiChat = new AiChat({ id: chatId });
     } if (action === 'on' || action === 'enable') {
       aiChat.enabled = true;
       await aiChat.save();
@@ -25,7 +25,7 @@ Command({
     } else if (action === 'model') {
       const modelIndex = parseInt(args[1]);
       if (isNaN(modelIndex) || modelIndex < 0 || modelIndex >= pollinations.models.chat.length) {
-        let md = '*Available AI Models:*\n\n';
+        let md = '*AI Models:*\n\n';
         pollinations.models.chat.forEach((model, index) => {
         md += `${index}. ${model.description} (${model.name})\n`;
         });
@@ -44,3 +44,4 @@ Command({
       return msg.reply('usage:\n.aichat on - Enable AI chat\n.aichat off - Disable AI chat\n.aichat model - View/change AI model\n.aichat status - View current settings');
     }
 });
+        
