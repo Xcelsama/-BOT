@@ -17,12 +17,19 @@ Command({
       const app = u[sel];
       await msg.reply(`*Downloading ${app.name}...*\n_This may take a few minutes depending on file size_`);
       const ap = await download(app.downloadUrl);
-      if (!ap) return;
-      await msg.send({document: ap, fileName: `${app.name.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.apk`, mimetype: 'application/vnd.android.package-archive', caption: `*${app.name}*\n\n* Package:* ${app.package}\n* Size:* ${app.size}\n* Version:* ${app.version}` });
+      if (!ap) {
+        return msg.reply('Failed to download the app. Please try again later.');
+      }
+      await msg.send({
+        document: ap, 
+        fileName: `${app.name.replace(/[^a-zA-Z0-9]/g, '_')}_${Date.now()}.apk`, 
+        mimetype: 'application/vnd.android.package-archive', 
+        caption: `*${app.name}*\n\n*Package:* ${app.package}\n*Size:* ${app.size}\n*Version:* ${app.version}`
+      });
       delete global.apkSearchResults[msg.sender];
     } catch (error) {
       console.error(error);
-      }
+    }
     return;
   } if (!query) return msg.reply('_Please provide an app name to search_\n\nExample: .apk minecraft');
   try { const apps = await search(query, 10);
