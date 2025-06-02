@@ -11,17 +11,18 @@ Command({
   let img = extractUrl(msg.text);
   if (!img && msg.quoted) {
     if (msg.quoted.message?.imageMessage) {
-    return msg.reply('_Please provide a direct img url_');
+      img = await msg.quoted.download();
     } else {
       const q = msg.quoted.message?.conversation || 
       msg.quoted.message?.extendedTextMessage?.text || '';
       img = extractUrl(q);
     }
-  } if (!img) return msg.reply('_Please reply with an image_');
+  } if (!img) return msg.reply('_Please reply to an image or provide image url_');
     const x = await axios.get(`https://flowfalcon.dpdns.org/imagecreator/upscale?url=${img}`);
     if (x.data && x.data.status && x.data.result) {
-    await msg.send({ image: { url: x.data.result },
-    caption: `*HD*`
-    });
-}});
-   
+      await msg.send({ 
+        image: { url: x.data.result },
+        caption: `*HD*`
+      });
+    } 
+});
