@@ -3,7 +3,7 @@ const { search, download } = require('aptoide-api');
 
 Command({
   cmd_name: 'apk',
-  aliases: ['aptoide'],
+  aliases: ['app'],
   category: 'downloader',
   desc: 'Search and download apps'
 })(async (msg) => {
