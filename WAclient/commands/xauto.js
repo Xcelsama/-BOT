@@ -1,4 +1,4 @@
-const { extractUrl } = require('../../lib/');
+const { extractUrl } = require('../../lib/Functions');
 const { twitter } = require('./Func/twitterDl');
 const Group = require('../../lib/models/schemas/GroupSchema');
 
