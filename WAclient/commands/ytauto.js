@@ -1,4 +1,5 @@
-const { extractUrl, savetube } = require('../../lib/');
+const { savetube } = require('../../lib/');
+var { extractUrl } = require('../../lib/Functions');
 const Group = require('../../lib/models/schemas/GroupSchema');
 const Ytml = async (msg) => {
   if (!msg.isGroup) return;
