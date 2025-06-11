@@ -36,7 +36,7 @@ Command({
         }
 
         const quiz = activeQuizzes.get(ctx);
-        const result = quiz.joinQuiz(user', useri);
+        const result = quiz.joinQuiz(userx, useri);
         await msg.reply(result.message);
         return;
     }
