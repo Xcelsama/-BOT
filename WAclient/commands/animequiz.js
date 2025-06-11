@@ -126,3 +126,6 @@ Command({
 
     await msg.reply(txt);
 });
+
+
+                                   
