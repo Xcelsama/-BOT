@@ -17,7 +17,7 @@ Command({
     if (!action || action === 'start') {
         const game = new TicTacToe();
         ctx.set(v, game);
-        const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.displayBoard()}\n\n*How to play:*\n• use \`${msg.prefix}ttt join\` to join the game\n• use \`${msg.prefix}ttt move <1-9>\` to make a move\n• ✅ = Player X, ❎ = Player O\n• Positions: 1-9 (1=top-left, 9=bottom-right)\n• Use \`${msg.prefix}ttt reset\` to start over`;
+        const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.xTable()}\n\n*How to play:*\n• use \`${msg.prefix}ttt join\` to join the game\n• use \`${msg.prefix}ttt move <1-9>\` to make a move\n• ✅ = Player X, ❎ = Player O\n• Positions: 1-9 (1=top-left, 9=bottom-right)\n• Use \`${msg.prefix}ttt reset\` to start over`;
         await msg.reply(res);
         return;
     }
@@ -31,7 +31,7 @@ Command({
         const game = ctx.get(v);
         const result = game.joinGame(p);
         if (result.success) {
-            const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.displayBoard()}\n\n✅ ${result.message}`;
+            const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.xTable()}\n\n✅ ${result.message}`;
             await msg.reply(res);
         } else {
             await msg.reply(`${result.message}`);
@@ -53,7 +53,7 @@ Command({
 
         const game = ctx.get(v);
         const result = game.makeMove(position, p);
-        let res = `🎮 *TIC TAC TOE* 🎮\n\n${game.TBoard()}`;
+        let res = `🎮 *TIC TAC TOE* 🎮\n\n${game.xTable()}`;
         if (!result.success) {
             res += `\n\n${result.message}`;
         } else {
@@ -89,7 +89,7 @@ Command({
         }
 
         const game = ctx.get(v);
-        const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.displayBoard()}`;
+        const res = `🎮 *TIC TAC TOE* 🎮\n\n${game.xTable()}`;
         await msg.reply(res);
         return;
     }
