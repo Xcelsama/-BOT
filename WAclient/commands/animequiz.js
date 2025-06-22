@@ -57,7 +57,7 @@ Command({
         return;
     }
 
-    
+
 
     if (action === 'next') {
         if (!activeQuizzes.has(ctx)) {
@@ -112,20 +112,15 @@ Command({
     }
 
 
-    const txt = `*ANIME QUIZ CMDS*’
+    const txt = `*ANIME QUIZ COMMANDS*
 
 \`quiz start <5-50>\` - Start new quiz (default: 10 questions)
-\`join\` - Join the quiz
-\`quiz begin\` - Begin the questions
-\`answer <1-5>\` - Answer current question
-\`quiz next\` - Force next question (admin)
+\`answer <1-5>\` - Answer current question (auto-joins you)
+\`quiz next\` - Force next question
 \`quiz scores\` - Show current scores
 \`quiz end\` - End current quiz
 
-*Note: Win*`;
+*Note: Quiz starts immediately when created. Just answer to participate!*`;
 
     await msg.reply(txt);
 });
-
-
-                                   
