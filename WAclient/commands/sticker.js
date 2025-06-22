@@ -8,49 +8,29 @@ Command({
     category: 'media',
     desc: 'Convert image/video to sticker'
 })(async (msg, text) => {
-        var text = msg.text;
         let media, type;
-        if (msg.quoted) {
-            const q = msg.quoted;
-            if (q.image) {
-                media = await q.download();
-                type = 'image';
-            } else if (q.video) {
-                media = await q.download();
-                type = 'video';
-            } else if (q.gif) {
-                media = await q.download();
-                type = 'video';
-            } else {
-                return await msg.reply('_Reply to an media_');
+        const mediaTypes = ['image', 'video', 'gif'];
+        const source = msg.image || msg.video || msg.gif ? msg : msg.quoted;
+        if (!source) 
+        return await msg.reply('_Reply to an media_');
+        for (const mediaType of mediaTypes) {
+            if (source[mediaType]) {
+                media = await source.download();
+                type = mediaType === 'gif' ? 'video' : mediaType;
+                break;
             }
-        } 
-         else if (msg.image) {
-            media = await msg.download();
-            type = 'image';
-        } else if (msg.video) {
-            media = await msg.download();
-            type = 'video';
-        } else if (msg.gif) {
-            media = await msg.download();
-            type = 'video';
-        } else {
-            return await msg.reply('_Reply to an media_');
         }
 
+        if (!media) return await msg.reply('_Reply to an media_');
         let packname = config.PACKNAME;
         let author = 'whatsapp-bot';
         if (text) {
-            const parts = text.split('|');
-            if (parts[0]) packname = parts[0].trim();
-            if (parts[1]) author = parts[1].trim();
+            const [pack, auth] = text.split('|');
+            if (pack?.trim()) packname = pack.trim();
+            if (auth?.trim()) author = auth.trim();
         }
 
-        const stickerBuffer = await toSticker(type, media, {
-            packname: packname,
-            author: author
-        });
-
-        await msg.reply({ sticker: stickerBuffer });
+        const stickerBuffer = await toSticker(type, media, { packname, author });
+        await msg.send({ sticker: stickerBuffer });
 
 });
