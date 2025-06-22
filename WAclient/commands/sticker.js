@@ -1,28 +1,53 @@
-const { Command } = require('../../lib/');
-const { makeSticker } = require('../../lib/Sticker');
-const fs = require('fs');
-var config = require('../../config');
+const { Command } = require('../../lib/command');
+const { toSticker } = require('../../lib/Sticker');
+const config = require('../../config');
 
 Command({
     cmd_name: 'sticker',
-    aliases: ['s'],
-    category: 'converter',
-    desc: 'Convert media to sticker'
-})(async (msg) => {
-        const buffer = msg.type === 'imageMessage' || msg.type === 'videoMessage' 
-            ? await msg.download() 
-            : msg.quoted?.type === 'imageMessage' || msg.quoted?.type === 'videoMessage'
-            ? await msg.quoted.download()
-            : null;
+    aliases: ['s', 'stick'],
+    category: 'media',
+    desc: 'Convert image/video to sticker'
+})(async (conn, msg, text) => {
+    let media, type;
+      if (msg.quoted) {
+            const q = msg.quoted;
+            if (q.image) {
+                media = await q.download();
+                type = 'image';
+            } else if (q.video) {
+                media = await q.download();
+                type = 'video';
+            } else if (q.gif) {
+                media = await q.download();
+                type = 'video';
+            } else {
+                return await msg.reply('_Reply to an image, video, or GIF_');
+            }
+        } 
+        else if (msg.image) {
+            media = await msg.download();
+            type = 'image';
+        } else if (msg.video) {
+            media = await msg.download();
+            type = 'video';
+        } else if (msg.gif) {
+            media = await msg.download();
+            type = 'video';
+        } else {
+            return await msg.reply('_reply to an media_');
+        }
 
-        if (!buffer) return msg.reply('Reply to an image/video');
-        const stk = await makeSticker(buffer, {
-            pack: config.PACKNAME
+        let packname = config.PACKNAME;
+        if (text) {
+            const parts = text.split('|');
+            if (parts[0]) packname = parts[0].trim();
+            if (parts[1]) author = parts[1].trim();
+        }
+
+        const stickerBuffer = await toSticker(type, media, {
+            packname: packname,
+            //author: author
         });
 
-        await msg.send({ 
-            sticker: fs.readFileSync(stk)
-        });
-        
-        fs.unlinkSync(stk);
+        await msg.send({sticker: stickerBuffer});
 });
