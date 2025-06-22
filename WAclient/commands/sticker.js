@@ -7,7 +7,7 @@ Command({
     aliases: ['s', 'stick'],
     category: 'media',
     desc: 'Convert image/video to sticker'
-})(async (conn, msg, text) => {
+})(async (msg) => {
     let media, type;
       if (msg.quoted) {
             const q = msg.quoted;
@@ -38,6 +38,7 @@ Command({
         }
 
         let packname = config.PACKNAME;
+         var text = msg.text;
         if (text) {
             const parts = text.split('|');
             if (parts[0]) packname = parts[0].trim();
