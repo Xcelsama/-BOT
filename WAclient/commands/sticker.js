@@ -7,9 +7,10 @@ Command({
     aliases: ['s', 'stick'],
     category: 'media',
     desc: 'Convert image/video to sticker'
-})(async (msg) => {
-    let media, type;
-      if (msg.quoted) {
+})(async (msg, text) => {
+        var text = msg.text;
+        let media, type;
+        if (msg.quoted) {
             const q = msg.quoted;
             if (q.image) {
                 media = await q.download();
@@ -21,10 +22,10 @@ Command({
                 media = await q.download();
                 type = 'video';
             } else {
-                return await msg.reply('_Reply to an image, video, or GIF_');
+                return await msg.reply('_Reply to an media_');
             }
         } 
-        else if (msg.image) {
+         else if (msg.image) {
             media = await msg.download();
             type = 'image';
         } else if (msg.video) {
@@ -34,11 +35,11 @@ Command({
             media = await msg.download();
             type = 'video';
         } else {
-            return await msg.reply('_reply to an media_');
+            return await msg.reply('_Reply to an media_');
         }
 
         let packname = config.PACKNAME;
-         var text = msg.text;
+        let author = 'whatsapp-bot';
         if (text) {
             const parts = text.split('|');
             if (parts[0]) packname = parts[0].trim();
@@ -47,8 +48,9 @@ Command({
 
         const stickerBuffer = await toSticker(type, media, {
             packname: packname,
-            //author: author
+            author: author
         });
 
-        await msg.send({sticker: stickerBuffer});
+        await msg.reply({ sticker: stickerBuffer });
+
 });
