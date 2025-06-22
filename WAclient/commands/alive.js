@@ -22,12 +22,12 @@ Command({
         const startTime = new Date(Date.now() - uptime * 1000);
         
         var c = `
-┌─【*BOT STATUS*
+┌─*【BOT STATUS*
 │ *Started:* ${startTime.toLocaleString()}
 │ *Uptime:* ${days}d ${hours}h ${minutes}m ${seconds}s
 └─
 
-┌─【*SYSTEM INFO*
+┌─*【SYSTEM INFO*
 │ *Platform:* ${process.platform.toUpperCase()}
 │ *Node.js:* ${process.version}
 │ *CPU:* ${cpuModel} (${cpuCount} cores)
@@ -35,18 +35,17 @@ Command({
 │ *Memory Usage:* ${((usedMem/totalMem)*100).toFixed(1)}%
 └─
 
-┌─【*PERFORMANCE*
+┌─*【PERFORMANCE*
 │ *CPU Load:* ${(os.loadavg()[0]).toFixed(2)}%
 │ *Free Memory:* ${freeMem}GB
 │ *Home Dir:* ${os.homedir().split('/').pop()}
 │ *Hostname:* ${os.hostname()}
 └─
 
-┌─【*CONFIG*
+┌─*【CONFIG*
 │ *Prefix:* ${config.PREFIX}
 │ *Language:* ${config.LANG || 'EN'}
 │ *WorkType:* ${config.WORKTYPE || 'Public'}
-│ *Owner:* ${config.OWNER_NUM ? 'Configured' : 'Not Set'}
 └─`;
 
         await msg.reply(c);
