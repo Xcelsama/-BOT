@@ -17,7 +17,7 @@ const startServer = () => {
 
 const Client = async () => {
     try {
-        await SessionCode(config.SESSION_ID || process.env.SESSION_ID, "./lib/multi_auth");
+        await SessionCode(config.SESSION_ID || process.env.SESSION_ID, "./lib/Session");
         await connectDB();
         
         startServer();
