@@ -1,3 +1,0 @@
-{
-    "header": "╭──╼【 *{botName}* 】\n┃ ⛥ User: @{user}\n┃ ✧ Prefix: [ {prefix} ]\n┃ ✧ Time: {time}\n┃ ✧ Mode: {mode}\n┃ ✧ Ram: {ram} MB\n╰──────────╼\n\n"
-}
