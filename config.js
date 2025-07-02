@@ -10,6 +10,7 @@ module.exports = {
        
     SESSION_ID: process.env.SESSION_ID || 'whatsapp-bot',
     AUTO_READ: process.env.AUTO_READ === 'true',
+    WORKTYPE: process.env.WORKTYPE || '',
     AUTO_TYPING: process.env.AUTO_TYPING === 'true',
     PRESENCE: process.env.PRESENCE || 'available',
     LOG_LEVEL: process.env.LOG_LEVEL || 'silent',
