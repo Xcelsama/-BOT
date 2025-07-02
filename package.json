@@ -28,6 +28,7 @@
     "g-i-s": "^2.1.7",
     "axios": "^1.8.3",
     "form-data": "latest",
+    "fs-extra": "^11.3.0",
     "file-type": "^16.5.3",
     "node-fetch": "^2.6.7",
     "node-cache": "^5.1.2",
