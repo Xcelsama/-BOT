@@ -1,7 +1,7 @@
 const http = require('http');
 const { bot } = require('./lib/main');
 const { SessionCode } = require('./lib/session');
-const { connectDB } = require('./lib/database');
+const { connectDB } = require('./lib/models/mongodb');
 const config = require('./config');
 
 const startServer = () => {
