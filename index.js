@@ -1,5 +1,5 @@
 const http = require('http');
-const { bot } = require('./lib/main');
+const { connect } = require('./lib/main');
 const { SessionCode } = require('./lib/session');
 const config = require('./config');
 
@@ -9,7 +9,7 @@ const startServer = () => {
         res.end('[_running_]');
     });
 
-    server.listen(config.PORT,() => {
+    server.listen(config.PORT, () => {
         console.log(`Server running on port: ${config.PORT}`);
     });
 };
@@ -17,11 +17,11 @@ const startServer = () => {
 const Client = async () => {
     try {
         if (config.SESSION_ID) {
-            await SessionCode(config.SESSION_ID, "./lib/Session");
+            await SessionCode(config.SESSION_ID, './lib/Session');
         }
         startServer();
         console.log('Starting...');
-        await bot.start();
+        await connect();
     } catch (error) {
         console.error(error);
     }
