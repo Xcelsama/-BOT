@@ -1,25 +1,24 @@
 const http = require('http');
 const { bot } = require('./lib/main');
 const { SessionCode } = require('./lib/session');
-const { connectDB } = require('./lib/models/mongodb');
 const config = require('./config');
 
 const startServer = () => {
     const server = http.createServer((req, res) => {
         res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('running');
+        res.end('[_running_]');
     });
 
-    server.listen(config.PORT, () => {
-        console.log(`server: ${config.PORT}`);
+    server.listen(config.PORT,() => {
+        console.log(`Server running on port: ${config.PORT}`);
     });
 };
 
 const Client = async () => {
     try {
-        await SessionCode(config.SESSION_ID || process.env.SESSION_ID, "./lib/Session");
-        await connectDB();
-        
+        if (config.SESSION_ID) {
+            await SessionCode(config.SESSION_ID, "./lib/Session");
+        }
         startServer();
         console.log('Starting...');
         await bot.start();
