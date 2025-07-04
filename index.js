@@ -10,10 +10,14 @@ const path = require('path');
 const { serialize } = require('./lib/serialize');
 const { loadCommands } = require('./lib/commands');
 const config = require('./config');
+var { SessionCode} = require('./lib/session');
 const logger = pino({ level: 'silent' });
 
+const sessionDir = path.join(__dirname, 'multi_auth');
+if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir);
+await SessionCode(config.SESSION_ID || process.env.SESSION_ID, "./lib/multi_auth");
 async function connect() {
-    const { state, saveCreds } = await useMultiFileAuthState('./auth');
+    const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
     const conn = makeWASocket({
         auth: state,
         logger,
