@@ -21,7 +21,7 @@ Module({
     const time = now.toLocaleTimeString('en-US', { hour12: false });
     const header = `╭──╼【 *${config.theme.displayName.toUpperCase()}* 】
 ┃ ⛥ User: ${message.pushName}
-┃ ✧ Prefix: ${config.PREFIX || process.env.PREFIX}
+┃ ✧ Prefix: ${config.prefix || process.env.PREFIX}
 ┃ ✧ Time: ${time}
 ┃ ✧ Mode: ${process.env.WORK_TYPE}
 ┃ ✧ Ram: ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB
