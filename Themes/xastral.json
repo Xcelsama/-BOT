@@ -4,26 +4,25 @@
     "description": "Your cosmic digital assistant",
     "image": "https://i.imgur.com/K2N8F5M.jpg",
     "colors": {
-        "primary": "🌟",
-        "secondary": "🌌",
-        "accent": "⚡"
+        "primary": "",
+        "secondary": "",
+        "accent": ""
     },
     "emojis": {
-        "connected": "⭐",
-        "disconnected": "🌑",
-        "command": "⚡",
-        "package": "🛸",
-        "total": "🌟"
+        "connected": "✅ Connected",
+        "disconnected": "Disconnected",
+        "command": "",
+        "package": "",
+        "total": ""
     },
     "messages": {
-        "connected": "X Astral online - Ready to transcend reality ⭐",
-        "disconnected": "X Astral has returned to the void 🌑",
-        "menu_h": "╭────────\n│*X Astral* │\n│  Cosmic Assistant    │\n╰──────╯",
-        "cmd_prefa": "⚡"
+        "connected": "X Astral online - Ready to transcend reality",
+        "disconnected": "X Astral has returned to the void",
+        "cmd_prefa": ""
     },
     "personality": {
         "greeting": "Greetings, mortal. I am X Astral, your cosmic guide",
-        "error": "The cosmic forces are misaligned. Error detected.",
+        "error": "The cosmic forces are misaligned. Error detected",
         "success": "Task completed. The universe is in harmony"
     }
 }
