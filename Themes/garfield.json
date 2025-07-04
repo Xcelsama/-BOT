@@ -1,0 +1,29 @@
+{
+    "name": "Garfield",
+    "displayName": "Garfield Bot",
+    "description": "Your lazy but lovable cat assistant",
+    "image": "https://i.imgur.com/X7J9Q8H.jpg",
+    "colors": {
+        "primary": "🧡",
+        "secondary": "🖤",
+        "accent": "💛"
+    },
+    "emojis": {
+        "connected": "😺",
+        "disconnected": "😿",
+        "command": "🐾",
+        "package": "📦",
+        "total": "🎯"
+    },
+    "messages": {
+        "connected": "Garfield is awake and ready😺",
+        "disconnected": "Garfield went back to sleep... 😴",
+        "menu_h": "╭─────\n│ *Garfield*│\n│ Your Lazy Assistant│\n╰──────╯",
+        "cmd_prefa": "🐾"
+    },
+    "personality": {
+        "greeting": "Meow! What do you want? I was sleeping...",
+        "error": "Ugh, something went wrong. I blame Mondays",
+        "success": "Fine, I did it. Now wheres my lasagna?"
+    }
+}
