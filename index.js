@@ -3,27 +3,21 @@ const { connect } = require('./lib/main');
 const { SessionCode } = require('./lib/session');
 const config = require('./config');
 
-const startServer = () => {
-    const server = http.createServer((req, res) => {
-        res.writeHead(200, { 'Content-Type': 'text/plain' });
-        res.end('[_running_]');
-    });
-
-    server.listen(config.PORT, () => {
-        console.log(`Server running on port: ${config.PORT}`);
-    });
-};
-
+const server = http.createServer((req, res) => {
+res.writeHead(200, {'Content-Type': 'text/plain'});
+res.end('[_Running_]\n');
+});
 const Client = async () => {
-    try {
-        if (config.SESSION_ID) {
-            await SessionCode(config.SESSION_ID, './lib/Session');
-        }
-        startServer();
-        console.log('Starting...');
-        await connect();
-    } catch (error) {
-        console.error(error);
+    try {   
+    await SessionCode(config.SESSION_ID || process.env.SESSION_ID,'./lib/Session');
+    console.log('Starting...');
+    await connect();
+    server.listen(config.PORT, () => {
+    console.log(`Server running on port ${config.PORT}`);
+    });
+   } catch (error) {
+    console.error(error);
+    process.exit(1); 
     }
 };
 
