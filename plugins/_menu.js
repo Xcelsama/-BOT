@@ -17,23 +17,17 @@ Module({
         return acc;
     }, {});
 
-    // Get system info
     const now = new Date();
     const time = now.toLocaleTimeString('en-US', { hour12: false });
-    const ramUsage = (process.memoryUsage().rss / 1024 / 1024).toFixed(2);
-    const userName = message.pushName || 'User';
-    const workType = process.env.WORK_TYPE || 'public';
-
-    // Header from theme
     const header = `╭──╼【 *${config.theme.displayName.toUpperCase()}* 】
-┃ ⛥ User: @${userName}[❤️]
-┃ ✧ Prefix: [ ${config.prefix} ]
+┃ ⛥ User: ${message.pushName}
+┃ ✧ Prefix: ${config.PREFIX || process.env.PREFIX}
 ┃ ✧ Time: ${time}
-┃ ✧ Mode: ${workType}
-┃ ✧ Ram: ${ramUsage} MB
+┃ ✧ Mode: ${process.env.WORK_TYPE}
+┃ ✧ Ram: ${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB
 ╰──────────╼\n\n`;
 
-    // Body with dynamic commands
+
     const body = Object.keys(packages)
         .sort()
         .map((pkg, index, array) => {
@@ -46,7 +40,7 @@ Module({
         })
         .join('\n');
 
-    const menuText = header + body;
+    const txt = header + body;
 
-    await message.send(menuText, 'image', config.theme.image);
+    await message.send(config.theme.image || process.theme.image, 'image', txt);
 });
