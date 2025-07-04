@@ -5,11 +5,11 @@ Module({
     package: 'mics',
     description: 'Check bot response time',
     aliases: ['p']
-})(async (msg) => {
+})(async (message) => {
     const start = Date.now();
-    const ctx = await msg.send('Ping...', 'text');
+    const ctx = await message.send('Ping...', 'text');
     const end = Date.now();
     const res = end - start;
     const ntx = `Pong! ${res}ms`;
-    await msg.send(ntx, 'text', { edit: ctx.key });
+    await message.send(ntx, 'text', { edit: ctx.key });
 });
