@@ -13,8 +13,6 @@ const sessionDir = path.join(__dirname, 'lib/Session');
 
 if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
 
-
-
 async function connect() {
     await SessionCode(config.SESSION_ID, "./lib/Session");
     const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
@@ -43,28 +41,41 @@ async function connect() {
     conn.ev.on('creds.update', saveCreds);
     
     conn.ev.on('messages.upsert', async (m) => {
-        const message = m.messages[0];
-        if (!message.key.fromMe && m.type === 'notify') {
-            const msg = serialize(message, conn);
+        const msg = m.messages[0];
+        if (!msg.key.fromMe && m.type === 'notify') {
+            const message = serialize(msg, conn);
             const commands = await loadCommands();
-            const text = msg.body?.toLowerCase() || '';
+            const text = message.body?.toLowerCase() || '';
             const prefix = config.prefix;
-            if (!text.startsWith(prefix)) return;
-            
-            if (config.WORK_TYPE === 'private' && !msg.isSelf) {
+
+            if (config.WORK_TYPE === 'private' && !message.isSelf) {
                 return; 
             }
-            
+
             const args = text.slice(prefix.length).split(' ');
             const command = args[0];
+
             for (const cmd of commands) {
-                if (cmd.command === command || (cmd.aliases && cmd.aliases.includes(command))) {
+                const prefixed = text.startsWith(prefix);
+
+                if (
+                    prefixed &&
+                    (cmd.command === command || (cmd.aliases && cmd.aliases.includes(command)))
+                ) {
                     try {
-                        await cmd.handler(msg);
+                        await cmd.handler(message);
                     } catch (error) {
                         console.error(error);
                     }
                     break;
+                }
+
+                if (cmd.on === 'text' && message.body) {
+                    try {
+                        await cmd.handler(message);
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             }
         }
