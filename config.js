@@ -9,7 +9,7 @@ module.exports = {
     owner: process.env.OWNER_NUMBER || '',
     packname: process.env.PACK_NAME || 'Gafiled',
     author: process.env.AUTHOR || theme.name || 'naxordeve',
-    SESSION_ID: process.env.SESSION_ID || 'xastral~ocubomoxub',
+    SESSION_ID: process.env.SESSION_ID || 'xastral~irumaroqox',
     autoRead: process.env.AUTO_READ === 'true' || true,
     autoTyping: process.env.AUTO_TYPING === 'true' || false,
     autoRecording: process.env.AUTO_RECORDING === 'true' || false,
