@@ -1,5 +1,5 @@
 const { Module } = require('../lib/Module');
-const { getCommands } = require('../lib/commands');
+const { getCommands } = require('../lib/Modules/commands');
 const config = require('../config');
 const fs = require('fs');
 const path = require('path');
