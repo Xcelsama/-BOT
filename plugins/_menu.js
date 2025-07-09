@@ -1,5 +1,5 @@
 const { Module, commands } = require('../lib/plugins');
-const { getTheme } = require('../Themes/theme');
+const { getTheme } = require('../Themes/themes');
 const config = require('../config');
 
 Module({
