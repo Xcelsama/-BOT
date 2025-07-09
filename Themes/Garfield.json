@@ -1,0 +1,10 @@
+{
+  "botName": "Garfield",
+  "owner": "Diegoson",
+  "image": "https://files.catbox.moe/dgg0yp.jpg",
+  "other": {
+    "connected": "✅ Garfield bot has connected",
+    "footer": "© Garfield Bot",
+    "error": "an error occured gbot"
+  }
+}
