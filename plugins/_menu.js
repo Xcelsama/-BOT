@@ -8,7 +8,7 @@ Module({
   description: 'Show all commands',
 })(async (message) => {
   const theme = getTheme();
-  const start = '⛥';
+  const star = '⛥';
   const time = new Date().toLocaleTimeString('en-ZA', { timeZone: 'Africa/Johannesburg' });
   const mode = config.WORK_TYPE || process.env.WORK_TYPE;
   const ramUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
