@@ -13,7 +13,7 @@ Module({
   const mode = config.WORK_TYPE || process.env.WORK_TYPE;
   const ramUsedMB = (process.memoryUsage().heapUsed / 1024 / 1024).toFixed(2);
   let _cmd_st = `╭──╼「 *${theme.botName}* 」\n`;
-  _cmd_st += `┃ ${star} User: ${user}\n`;
+  _cmd_st += `┃ ${star} User: ${message.pushName}\n`;
   _cmd_st += `┃ ${star} Prefix: ${config.prefix}\n`;
   _cmd_st += `┃ ${star} Time: ${time}\n`;
   _cmd_st += `┃ ${star} Mode: ${mode}\n`;
