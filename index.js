@@ -1,6 +1,6 @@
 const config = require('./config');
 const { SessionCode } = require('./lib/session');
-const { connect } = require('./lib/bot');
+const { connect } = require('./lib/index');
 const { startServer } = require('./lib/server');
 
 const Client = async () => {
