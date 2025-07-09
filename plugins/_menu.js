@@ -1,6 +1,6 @@
-const { Module, commands } = require('./lib/plugins');
-const { getTheme } = require('./Themes/theme');
-const config = require('./config');
+const { Module, commands } = require('../lib/plugins');
+const { getTheme } = require('../Themes/theme');
+const config = require('../config');
 
 Module({
   command: 'menu',
