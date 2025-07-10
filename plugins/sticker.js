@@ -5,24 +5,21 @@ const config = require('../config');
 Module({
   command: 'take',
   package: 'media',
-  description: 'change packname/author'
+  description: 'custom packname and author'
 })(async (message, match) => {
   let mediaa = message.quoted || message;
-  if (mediaa.type !== 'sticker') return await message.send('_Reply to a sticker_');
-  let packname = config.packname;
-  let author = config.author;
-  if (match && match.includes('|')) {
-    const parts = match.split('|');
-    packname = parts[0].trim() || config.packname;
-    author = parts[1].trim() || config.author;
-  } const media = await mediaa.download();
-  const buffer = await sticker.toSticker('image', media, {
-    packname: packname,
-    author: author
+  if (!/image|video/.test(mediaa.type)) {
+  return await message.send('_Reply to an image or video_'); }
+  const [packname, author] = match?.split('|').map(s => s.trim()) || [];
+  if (!packname || !author) return await message.send('_use: take pack | author_');
+  const media = await mediaa.download();
+  const buffer = await sticker.toSticker(mediaa.type, media, {
+    packname,
+    author
   });
-
   await message.send({ sticker: buffer });
 });
+
 
 Module({
   command: 'sticker',
