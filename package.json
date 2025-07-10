@@ -1,13 +1,13 @@
 {
-  "name": "xastral",
-  "version": "4.0.1",
+  "name": "garfield",
+  "version": "4.0.2",
   "description": "",
   "main": "index.js",
   "scripts": {
     "postinstall": "node -e \"try { require('sharp') } catch (e) { process.exit(1); }\" || yarn add --ignore-engines sharp@0.33.5",
-    "start": "pm2 start . --attach --name xastral",
-    "docker": "pm2-runtime start . --name xastral",
-    "stop": "pm2 stop xastral",
+    "start": "pm2 start . --attach --name garfield",
+    "docker": "pm2-runtime start . --name garfield",
+    "stop": "pm2 stop garfield",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
@@ -37,7 +37,7 @@
     "dotenv": "^16.4.5",
     "jimp": "^0.16.1",
     "moment-timezone": "^0.5.46",
-    "pm2": "^6.0.5",
+    "pm2": "^6.0.8",
     "pino": "^9.6.0",
     "sharp":  "^0.33.5",
     "simple-git":  "^3.20.0",
