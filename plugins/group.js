@@ -7,8 +7,24 @@ Module({
 })(async (message) => {
     await message.loadGroupInfo(message.from);
     if (!message.isGroup || !message.isAdmin || !message.isBotAdmin) return;
-    const jid = message.body.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
-    await message.addParticipant(jid);
+    const number = message.body.replace(/[^0-9]/g, '');
+    if (!number) return message.send('_Provide user num_');
+    const jid = number + '@s.whatsapp.net';
+    const res = await message.addParticipant(jid);
+    const status = res?.[jid]?.status;
+    if (status === 200) {
+        await message.send(`@${number} has been added`, {
+            mentions: [jid]
+        });
+    } else if (status === 403) {
+        await message.send(`@${number} allow group invites`, {
+            mentions: [jid]
+        });
+    } else {
+        await message.send(`403: @${number}`, {
+            mentions: [jid]
+        });
+    }
 });
 
 Module({
@@ -20,6 +36,7 @@ Module({
     if (!message.isGroup || !message.isAdmin || !message.isBotAdmin) return;
     const jid = message.quoted?.participant || message.body.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
     await message.removeParticipant(jid);
+    await message.send(`${jid} removed`);
 });
 
 Module({
@@ -31,6 +48,7 @@ Module({
     if (!message.isGroup || !message.isAdmin || !message.isBotAdmin) return;
     const jid = message.quoted?.participant || message.body.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
     await message.promoteParticipant(jid);
+    await message.send(`${jid} has been promoted`);
 });
 
 Module({
@@ -42,10 +60,11 @@ Module({
     if (!message.isGroup || !message.isAdmin || !message.isBotAdmin) return;
     const jid = message.quoted?.participant || message.body.replace(/[^0-9]/g, '') + '@s.whatsapp.net';
     await message.demoteParticipant(jid);
+    await message.send(`${jid} has been demoted`);
 });
 
 Module({
-    command: 'mute',
+    command: 'close',
     package: 'group',
     description: 'Mute the group (admins only)'
 })(async (message) => {
