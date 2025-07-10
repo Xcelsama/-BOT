@@ -6,19 +6,13 @@ Module({
   package: 'downloader',
   description: 'Download GitHub repo zip',
 })(async (message, match) => {
-  const regex = /(?:https?:\/\/|git@)github\.com[\/:]([^\/\s]+)\/([^\/\s]+)(?:\.git)?/;
-  const ctx = regex.exec(match);
-  if (!ctx) return message.send('_Please provide a valid GitHub repo url_');
-
-  const [_, username, repoRaw] = match;
-  const repo = repoRaw.replace(/\.git$/, '');
-
-  const api = `https://api.github.com/repos/${username}/${repo}`;
-  const res = await axios.get(api).catch(() => null);
-  if (!res || res.status !== 200) return message.send('_not found_');
-
-  const branch = res.data.default_branch || 'main';
-  const zip_url = `https://github.com/${username}/${repo}/archive/refs/heads/${branch}.zip`;
-  await message.send({document: { url: zip_url }, mimetype: 'application/zip', fileName: `${repo}-${branch}.zip`
-  });
-});
+    const ctx = /(?:https?:\/\/|git@)github\.com[\/:]([^\/\s]+)\/([^\/\s]+)(?:\.git)?/;
+    const eg = ctx.exec(match);
+    if (!eg) return message.send('_Provide git repo_');
+    const [_, username, repo] = eg;
+    const zip_url = `https://api.github.com/repos/${username}/${repo.replace(/\.git$/, "")}`;
+    const res = await axios.get(zip_url).catch(() => null);
+    if (!res || res.status !== 200) return;
+    const { name, stargazers_count, forks_count } = res.data;
+    await message.send({document: { url: `${zip_url}/zipball` }, fileName: `${repo}.zip`, mimetype: "application/zip"});
+}); 
