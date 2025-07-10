@@ -1,5 +1,5 @@
 const util = require('util');
-const {Module} = require('../lib/plugins'(;
+const {Module} = require('../lib/plugins');
 const config = require('../config');
 
 Module({
