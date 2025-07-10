@@ -41,7 +41,7 @@ Module({
     _cmd_st += `╰──────────╼\n`;
   }
 
-  _cmd_st += `\n${styles.toSmallCapsconst(theme.other?.footer)}`;
+  _cmd_st += `\n${theme.other?.footer}`;
 
   if (theme.image) {
     await message.send(
