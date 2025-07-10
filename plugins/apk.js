@@ -6,7 +6,7 @@ Module({
   package: 'downloader',
   description: 'Search and download apps'
 })(async (message, match) => {
-  if (!args) return message.send('_Provide an app name_');
+  if (!match) return message.send('_Provide an app name_');
   const results = await search(match, 1);
   if (!results.length) return message.send('_not found_');
   const app = results[0];
