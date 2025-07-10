@@ -3,7 +3,7 @@ const Tube = require('../lib/Class/Tube');
 
 Module({
   command: 'song',
-  category: 'downloader',
+  package: 'downloader',
   description: 'Search and download a song',
 })(async (message, match) => {
   if (!match) return await message.send('_Please enter a song name_');
