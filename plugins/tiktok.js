@@ -1,5 +1,5 @@
 const { Module } = require('../lib/plugins');
-const TikTok = require('../lib/Class/TikTok');
+const TikTok = require('../lib/Class/tiktok');
 
 Module({
   command: 'tiktok',
