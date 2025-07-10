@@ -8,7 +8,7 @@ Module({
     const tts = process.uptime();
     const days = Math.floor(tts / 86400);
     const hours = Math.floor((tts % 86400) / 3600);
-    const minutes = Math.floor((tta % 3600) / 60);
+    const minutes = Math.floor((tts % 3600) / 60);
     const seconds = Math.floor(tts % 60);
     const uptime = `${days}d ${hours}h ${minutes}m ${seconds}s`;
     const sent = await message.send('uptime...');
