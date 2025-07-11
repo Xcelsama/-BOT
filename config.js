@@ -8,6 +8,8 @@ module.exports = {
     packname: process.env.PACKNAME || 'ɠαɾϝιҽʅɗ',
     author: process.env.AUTHOR || 'ɳαxσɾ',
     SESSION_ID: process.env.SESSION_ID || '',
+    KOYEB_APP_NAME: process.env.KOYEB_APP_NAME || '', 
+    RENDER: process.env.RENDER || '',
     HASTEBIN: process.env.HASTEBIN || '427ab9bad04c076e1d20bfd8d4bae160b6598120246fee71dde98ffb4da39abe79b11890ae4f8c535abb07036a34fff9ad1d83183d71c97b876123069acf5f8e',
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE) || 100 * 1024 * 1024,
     timezone: process.env.TIMEZONE || 'UTC',
