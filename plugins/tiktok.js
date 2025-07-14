@@ -1,5 +1,6 @@
 const { Module } = require('../lib/plugins');
 const TikTok = require('../lib/Class/tiktok');
+const UrlUtil = require('../lib/UrlUtil');
 
 Module({
   command: 'tiktok',
@@ -17,3 +18,16 @@ Module({
   });  
 });
     
+Module({
+  on: 'text',
+})(async (message) => {
+  const urls = UrlUtil.extract(message.body);
+  const url = urls.find(u => u.includes('tiktok.com') || u.includes('vm.tiktok.com'));
+  if (!url) return;
+  const tt = new TikTok();
+  const result = await tt.download(url);
+  if (result.status !== 200) return await message.send(`_${result.message || result.error}_`);
+  const video = result.data;
+  await message.send({video: { url: video.hdPlayUrl || video.playUrl }, caption: `*Title:* ${video.title}\n*Author:* ${video.nickname}`
+  });
+});
