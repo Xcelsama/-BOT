@@ -1,4 +1,4 @@
-const { search, download } = require('aptoide-api');
+const { search } = require('aptoide-api');
 const { Module } = require('../lib/plugins');
 
 Module({
@@ -9,9 +9,13 @@ Module({
   if (!match) return await message.send('Please provide an app name');
   const results = await search(match, 9);
   if (!results.length) return await message.send('_sorry_');
-  let caption = `Reply with a number (1 to 10):\n\n`;
+  let caption = `Reply with a number (1 to 9):\n\n`;
   results.forEach((app, i) => {
-  caption += `${i + 1}. ${app.name}\n*Package:* ${app.package}\n*Rating:* ${app.rating}\n*Version:* ${app.version}\n*Size:* ${app.size}\n\n`; });
+  caption += `${i + 1}. ${app.name}\n`;
+  caption += `Package: `.padEnd(10) + `${app.package}\n`;
+  caption += `Rating:  `.padEnd(10) + `${app.rating}\n`;
+  caption += `Version: `.padEnd(10) + `${app.version}\n`;
+  caption += `Size:    `.padEnd(10) + `${app.size}\n\n`; });
   await message.send(caption);
 });
 
