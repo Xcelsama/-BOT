@@ -4,6 +4,6 @@ Module({
     on: "text"
 }) (async (message) => {
         if (message.body.toLowerCase() === "hey") {
-            await message.reply("_Hey there_");
+            await message.send("_Hey there_");
         }
     });
