@@ -1,4 +1,4 @@
-const { search } = require('aptoide-api');
+const { search, download } = require('aptoide-api');
 const { Module } = require('../lib/plugins');
 const TextStyles = require('../lib/textfonts');
 
@@ -19,7 +19,7 @@ Module({
     caption += `   *Rating :* ${app.rating}\n`;
     caption += `   *Version:* ${app.version}\n`;
     caption += `   *Size   :* ${app.size}\n\n`; });
-  const f = styles.toMonoSpace(caption);
+  const f = styles.toMonospace(caption);
   await message.send(f);
 });
 
