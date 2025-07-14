@@ -23,7 +23,7 @@ Module({
   if (!message.quoted) return;
   if (!message.body.match(/^\d+$/)) return;
   const number = parseInt(message.body.trim());
-  const q = typeof message.quoted.msg === 'string' ? message.quoted.message : '';
+  const q = typeof message.quoted.message === 'string' ? message.quoted.message : '';
   const lines = q.split('\n').filter(line => /^\d+\.\s/.test(line));
   const slt = lines[number - 1];
   if (!slt) return await message.send('Invalid');
