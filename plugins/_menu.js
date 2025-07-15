@@ -23,11 +23,13 @@ Module({
   _cmd_st += `┃ ${styles.toSmallCaps(star)} Ram: ${ramUsedMB} MB\n`;
   _cmd_st += `╰──────────╼\n\n`;
 
-  const grouped = commands.reduce((acc, cmd) => {
-    if (!acc[cmd.package]) acc[cmd.package] = [];
-    acc[cmd.package].push(cmd.command);
-    return acc;
-  }, {});
+  const grouped = commands
+    .filter(cmd => cmd.command && cmd.command !== 'undefined')
+    .reduce((acc, cmd) => {
+      if (!acc[cmd.package]) acc[cmd.package] = [];
+      acc[cmd.package].push(cmd.command);
+      return acc;
+    }, {});
 
   const categories = Object.keys(grouped).sort();
 
