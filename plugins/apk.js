@@ -9,16 +9,15 @@ Module({
   if (!match) return await message.send('Please provide an app name');
   const results = await search(match, 9);
   if (!results.length) return await message.send('_sorry_');
-  let caption = '```*Reply with a number (1 to 9):*\n\n';
+  let caption = `Reply with a number (1 to 9):\n\n`;
   results.forEach((app, i) => {
-    caption += `${String(i + 1).padEnd(2)}. *${app.name}*\n`;
-    caption += `   *Package:* ${app.package}\n`;
-    caption += `   *Rating :* ${app.rating}\n`;
-    caption += `   *Version:* ${app.version}\n`;
-    caption += `   *Size   :* ${app.size}\n\n`;
+    caption += `${i + 1}. *${app.name}*\n`;
+    caption += `*Package:* `.padEnd(10) + `${app.package}\n`;
+    caption += `*Rating:*  `.padEnd(10) + `${app.rating}\n`;
+    caption += `*Version:* `.padEnd(10) + `${app.version}\n`;
+    caption += `*Size:*    `.padEnd(10) + `${app.size}\n\n`;
   });
 
-  caption += '```';
   await message.send(caption);
 });
 
