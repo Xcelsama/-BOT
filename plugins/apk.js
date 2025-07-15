@@ -1,27 +1,27 @@
 const { search, download } = require('aptoide-api');
 const { Module } = require('../lib/plugins');
-const TextStyles = require('../lib/textfonts');
-
 
 Module({
   command: 'apk',
   package: 'downloader',
   description: 'Search and download apps'
 })(async (message, match) => {
-  const styles = new TextStyles();
   if (!match) return await message.send('Please provide an app name');
   const results = await search(match, 9);
   if (!results.length) return await message.send('_sorry_');
-  let caption = `Reply with a number (1 to 9):\n\n`;
+  let caption = '```*Reply with a number (1 to 9):*\n\n';
   results.forEach((app, i) => {
-    caption += `${String(i + 1).padEnd(2)}. ${app.name}\n`;
+    caption += `${String(i + 1).padEnd(2)}. *${app.name}*\n`;
     caption += `   *Package:* ${app.package}\n`;
     caption += `   *Rating :* ${app.rating}\n`;
     caption += `   *Version:* ${app.version}\n`;
-    caption += `   *Size   :* ${app.size}\n\n`; });
-  const f = styles.toMonospace(caption);
-  await message.send(f);
+    caption += `   *Size   :* ${app.size}\n\n`;
+  });
+
+  caption += '```';
+  await message.send(caption);
 });
+
 
 Module({
   on: 'text'
