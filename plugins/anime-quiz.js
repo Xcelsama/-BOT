@@ -1,16 +1,16 @@
 const { Module } = require('../lib/plugins');
 const { Quiz } = require('anime-quiz');
+const he = require('he');
 const quiz = new Quiz();
 const sessions = new Map();
 
 Module({
   command: 'animequiz',
   package: 'games',
-  description: 'Play an Anime quiz game',
+  description: 'Play an Anime quiz game'
 })(async (message, match) => {
   if (!message.isGroup) return;
-  if (sessions.has(message.from)) {
-  return await message.send('_A quiz is already running in this group_');}
+  if (sessions.has(message.from)) return await message.send('A quiz is already running in this group');
   const max = parseInt(match) || 0;
   await startQuiz(message, { maxQuestions: max });
 });
@@ -20,72 +20,68 @@ Module({
 })(async (message) => {
   if (!message.isGroup) return;
   const session = sessions.get(message.from);
-  if (!session) return;
-  if (message.sender !== session.starter) return;
+  if (!session || message.sender !== session.starter) return;
   const text = message.body?.trim().toLowerCase();
   if (!text) return;
-  const current = session.quiz;
-  const guess = text.length === 1 && parseInt(text)
-  ? current.options[parseInt(text) - 1]?.toLowerCase()
-  : text;
-  if (guess === current.answer.toLowerCase()) {
-    clearTimeout(session.timeout);
+  const options = session.quiz.options;
+  const correct = session.quiz.answer.toLowerCase();
+  const guess = /^\d+$/.test(text) ? options[parseInt(text) - 1]?.toLowerCase() : text;
+  clearTimeout(session.timeout);
+  if (guess === correct) {
     session.score++;
-    session.askedQuestions++;
-    if (session.maxQuestions > 0 && session.askedQuestions >= session.maxQuestions) {
-    await message.send(`🎉 You completed ${session.maxQuestions} questions\n\n🏅 Final Score: *${session.score}*`);
-    sessions.delete(message.from);
-    return;
+    session.asked++;
+    if (session.max > 0 && session.asked >= session.max) {
+      await message.send(`🎉 Quiz Complete\n\n🏅 Final Score: *${session.score}*`);
+      return sessions.delete(message.from);
     }
 
-    await message.send(`✅ Correct\n🏅 Score: *${session.score}*\n❤️ Lives: *${session.lives}*\n\n_Next question coming..._`);
-    setTimeout(() => startQuiz(message, session), 2000);
-  } else {
-    session.lives--;
-    if (session.lives <= 0) {
-      clearTimeout(session.timeout);
-      await message.send(`❌ Wrong\n💀 Game Over\n\n📊 Final Score: *${session.score}*`);
-      sessions.delete(message.from);
-    } else {
-      clearTimeout(session.timeout);
-      await message.send(`❌ Wrong\n💡 Correct answer: *${current.answer}*\n❤️ Lives left: *${session.lives}*\n\n_Next question coming..._`);
-      setTimeout(() => startQuiz(message, session), 2000);
-    }
+  await message.send(`✅ Correct\n🏅 Score: *${session.score}*  ❤️ Lives: *${session.lives}*\n\n_Next question coming..._`);
+  return setTimeout(() => startQuiz(message, session), 1500);
   }
+
+  session.lives--;
+  if (session.lives <= 0) {
+  await message.send(`*Wrong*\n💀 Game Over\n\n📊 Final Score: *${session.score}*`);
+  return sessions.delete(message.from);}
+  await message.send(`*Wrong*\n💡 Correct Answer: *${session.quiz.answer}*\n❤️ Lives Left: *${session.lives}*\n\n_Next question coming..._`);
+  setTimeout(() => startQuiz(message, session), 1500);
 });
 
 async function startQuiz(message, existing = null) {
-  const data = quiz.getRandom();
-  const timeout = setTimeout(() => {
-    message.send('⏱️ Time\'s up Game ended');
-    sessions.delete(message.from);
-  }, 60000);
+  const raw = quiz.getRandom();
+  const data = {
+    question: he.decode(raw.question),
+    options: raw.options.map(opt => he.decode(opt)),
+    answer: he.decode(raw.answer)
+  };
 
-  const session = existing || {
-    quiz: null,
+  const session = existing ?? {
     score: 0,
     lives: 3,
-    askedQuestions: 0,
-    maxQuestions: 0,
-    timeout: null,
-    starter: message.sender,
+    asked: 0,
+    max: 0,
+    starter: message.sender
   };
 
   session.quiz = data;
-  session.timeout = timeout;
-  if (!existing) session.maxQuestions = session.maxQuestions || 0;
+  session.timeout = setTimeout(() => {
+    message.send('Time\'s up Quiz ended');
+    sessions.delete(message.from);
+  }, 60000);
+
   sessions.set(message.from, session);
   let text = `🎌 *Anime Quiz Game*\n\n`;
   text += `🧠 *Question:*\n${data.question}\n\n`;
   text += `🎯 *Options:*\n`;
-  text += `1️⃣  ${data.options[0]}\n`;
-  text += `2️⃣  ${data.options[1]}\n`;
-  text += `3️⃣  ${data.options[2]}\n`;
-  text += `4️⃣  ${data.options[3]}\n`;
+  data.options.forEach((opt, i) => {
+    text += `${i + 1}️⃣  ${opt}\n`;
+  });
+
   text += `\n*❤️ Lives:* *${session.lives}*\n*🏅 Score:* *${session.score}*`;
-  if (session.maxQuestions > 0) {
-    text += `   📋 Question: *${session.askedQuestions + 1}/${session.maxQuestions}*`;
+  if (session.max > 0) {
+  text += `\n*📋 Question:* *${session.asked + 1}/${session.max}*`;
   }
+
   text += `\n💬 _Reply with the correct num (1-4)_`;
   await message.send(text);
 }
