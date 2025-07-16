@@ -7,13 +7,12 @@ Module({
 })(async (message, match) => {
   const Gemini = require('../lib/Gemini');
   const g = new Gemini();
-  const text = match || message.body;
-  if (!text && !message.quoted) return await message.send('_prompt or reply to an image_');
+  if (!match && !message.quoted) return await message.send('_prompt or reply to an image_');
   let buffer = null;
   if (message.quoted && message.quoted.type === 'image') {
   buffer = await message.quoted.download(); }
   const res = await g.chat({
-    prompt: text,
+    prompt: match,
     img: buffer
   });
 
