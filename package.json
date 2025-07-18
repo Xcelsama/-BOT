@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "node -e \"try { require('sharp') } catch (e) { process.exit(1); }\" || yarn add --ignore-engines sharp@0.33.5",
     "start": "pm2 start . --attach --name garfield",
-    "docker": "pm2-runtime start . --name garfield",
     "stop": "pm2 stop garfield",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -40,15 +38,9 @@
     "moment-timezone": "^0.5.46",
     "pm2": "^6.0.8",
     "pino": "^9.6.0",
-    "sharp":  "^0.33.5",
-    "simple-git":  "^3.20.0",
     "sequelize": "^6.37.7",
     "yt-search": "latest",
     "mongoose": "^8.13.3",
     "sqlite3": "^5.1.7"
-  },
-  "packageManager": "yarn@1.22.22",
-  "engines": {
-    "node": ">=20.0.0"
   }
 }
