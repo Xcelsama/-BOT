@@ -1,4 +1,4 @@
-/*const { Module } = require('../lib/plugins');
+const { Module } = require('../lib/plugins');
 const game = new Map();
 
 Module({
@@ -126,4 +126,4 @@ Module({
   }
 
   return await message.send('This column is full. Choose another one');
-});*/
+});
