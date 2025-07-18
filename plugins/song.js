@@ -4,9 +4,9 @@ const xbuddy = require('./xbuddy');
 
 Module({
   command: 'song',
-  description: 'Download audio from YouTube (via URL or search)',
   package: 'downloader',
-}, async (message, match) => {
+  description: 'Download audio from YouTube (via URL or search)'
+})( async (message, match) => {
   if (!match) return await message.send('Send a song name or YouTube link.');
   let url = match;
   if (!url.includes('youtube.com') && !url.includes('youtu.be')) {
