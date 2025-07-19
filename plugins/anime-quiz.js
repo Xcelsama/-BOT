@@ -4,6 +4,7 @@ const game = new Map();
 
 Module({
   command: 'animequiz',
+  package: 'games',
   description: 'Anime quiz game for groups only',
 })(async (message, match) => {
   if (!message.isGroup) return;
