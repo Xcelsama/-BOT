@@ -29,36 +29,45 @@ Module({
   package: 'downloader',
   description: 'Play music or video from query'
 })(async (message, match) => {
-  if (!match) return await message.send('_Please provide a search q_');
+  if (!match) return await message.send('_Please provide a search query_');
   const result = await yts(match);
-  if (!result.videos.length) return await message.send('nothin');
+  if (!result.videos.length) return await message.send('nofound');
   const video = result.videos[0];
-  const info = await downloadMusicAndVideos(video.url);
-  const caption = `*${info.title}*\n\`\`\`\n◆ 1. *Audio*\n◆ 2. *Document*\n◆ 3. *Video*\n\`\`\`\n\n${video.url}\n\nReply with num`;
-  return await message.send({image: { url: info.thumb },caption}, { quoted: message });
+  await message.send({
+    image: { url: video.thumbnail },
+    caption: `*${video.title}*\n\`\`\`\n◆ 1. *Audio*\n◆ 2. *Document*\n◆ 3. *Video*\n\`\`\`\n\n${video.url}\n\nReply with num`
+  }, { quoted: message });
 });
 
 Module({
   on: 'text'
 })(async (message) => {
-  const UrlUtil = require('../lib/UrlUtil');
   if (!message.quoted) return;
   if (!message.body.includes('◆')) return;
-  let q = message.body.replace('◆', '').trim();
-  const urls = UrlUtil.extract(message.quoted.text || message.quoted.body || '');
-  if (!urls.length) return;
+  const urls = (message.quoted.text || message.quoted.body || '').match(/https?:\/\/[^\s]+/g);
+  if (!urls || !urls.length) return;
+  const q = message.body.replace('◆', '').trim();
   const url = urls[0];
   const info = await downloadMusicAndVideos(url);
   if (q === '1' || q === '2') {
     const meta = new MetadataEditor();
     const mp = await meta.write(info.url, info.thumb, { title: info.title });
-    if (q === '1') return await message.send({ audio: mp, mimetype: 'audio/mpeg' }, { quoted: message });
+    if (q === '1') {
+      return await message.send({ audio: mp, mimetype: 'audio/mpeg' }, { quoted: message });
+    }
     if (q === '2') {
-      return await message.send({document: mp,mimetype: 'audio/mpeg',fileName: `${info.title}.mp3`
+      return await message.send({
+        document: mp,
+        mimetype: 'audio/mpeg',
+        fileName: `${info.title}.mp3`
       }, { quoted: message });
     }
   }
   if (q === '3') {
-    return await message.send({ video: { url: info.url }, mimetype: 'video/mp4', caption: info.title }, { quoted: message });
+    return await message.send({
+      video: { url: info.url },
+      mimetype: 'video/mp4',
+      caption: info.title
+    }, { quoted: message });
   }
 });
