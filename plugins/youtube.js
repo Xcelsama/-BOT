@@ -21,16 +21,16 @@ Module({
   if (result.status !== 'success') return message.send('err');
   const meta = new MetadataEditor();
   const fb = await meta.write(result.url, result.thumb, { title: result.title });
-  return message.send(
-    { document: fb, fileName: `${result.title}.mp3`, mimetype: 'audio/mpeg' },{quoted: message})
+  return message.send({ document: fb, fileName: `${result.title}.mp3`, mimetype: 'audio/mpeg' },{quoted: message})
 });
+
 Module({
   command: 'play',
   package: 'downloader',
   description: 'Play music or video from query'
 })(async (message, match) => {
   if (!match) return await message.send('_Please provide a search q_');
-  const result = await yt(match);
+  const result = await yts(match);
   if (!result.videos.length) return await message.send('nothin');
   const video = result.videos[0];
   const info = await downloadMusicAndVideos(video.url);
