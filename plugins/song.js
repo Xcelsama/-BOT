@@ -1,93 +1,61 @@
+//
 const { Module } = require('../lib/plugins');
 const fetch = require('node-fetch');
 
-class YTMP3Downloader {
-  constructor() {
-    this.MAX_FETCH_ATTEMPT = 12;
-    this.NEXT_FETCH_WAITING_TIME = 5000;
-    this.headers = {
-      "Referer": "https://ytmp3.fi/"
-    };
+const ytmp3mobi = async (youtubeUrl, format = "mp3") => {
+  const regYoutubeId = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/watch\?v=)([^&|^?]+)/;
+  const videoId = youtubeUrl.match(regYoutubeId)?.[2];
+  if (!videoId) throw Error("Can't extract YouTube video ID. Please check your link.");
+
+  const availableFormat = ["mp3", "mp4"];
+  const formatIndex = availableFormat.findIndex(v => v == format.toLowerCase());
+  if (formatIndex == -1) throw Error(`${format} is invalid. Available: ${availableFormat.join(", ")}`);
+
+  const urlParam = {
+    v: videoId,
+    f: format,
+    _: Math.random()
+  };
+
+  const headers = {
+    "Referer": "https://id.ytmp3.mobi/",
+  };
+
+  const fetchJson = async (url, desc) => {
+    const res = await fetch(url, { headers });
+    if (!res.ok) throw Error(`Failed to fetch ${desc} | ${res.status} ${res.statusText}`);
+    return await res.json();
+  };
+
+  const { convertURL } = await fetchJson("https://d.ymcdn.org/api/v1/init?p=y&23=1llum1n471&_=" + Math.random(), "convertURL");
+
+  const { progressURL, downloadURL } = await fetchJson(`${convertURL}&${new URLSearchParams(urlParam).toString()}`, "progress & download URL");
+
+  let result = {};
+  while (true) {
+    const json = await fetchJson(progressURL, "progress status");
+    if (json.error) throw Error(`Error while processing: ${json.error}`);
+    if (json.progress == 3) {
+      result = { title: json.title, downloadURL };
+      break;
+    }
+    await new Promise(r => setTimeout(r, 3000));
   }
 
-  async delay(ms) {
-    return new Promise(re => setTimeout(re, ms));
-  }
-
-  async handleCapcay(id) {
-    const randomCode = (Math.random() + "").substring(2, 6);
-
-    const headers = {
-      "Origin": "https://cf.hn",
-      "Content-Type": "application/x-www-form-urlencoded",
-      "Referer": `https://cf.hn/captcha.php?id=${id}&page=ytmp3.fi`,
-    };
-
-    const body = new URLSearchParams({
-      userCaptcha: randomCode,
-      generatedCaptcha: randomCode,
-      id,
-      page: "ytmp3.fi"
-    }).toString();
-
-    await fetch("https://cf.hn/captcha_check.php", {
-      method: "POST",
-      headers,
-      body
-    });
-  }
-
-  async download(youtubeUrl) {
-    const id = youtubeUrl?.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/)?.[2];
-    if (!id) throw Error(`Invalid YouTube URL or video ID could not be extracted.`);
-
-    let fetchCount = 0;
-    let json;
-
-    do {
-      const res = await fetch(`https://cf.hn/z.php?id=${id}&t=${Date.now()}`, {
-        headers: this.headers
-      });
-
-      if (!res.ok) {
-        throw Error(`fetch is not ok ${res.status} ${res.statusText}\n${await res.text() || null}`);
-      }
-
-      json = await res.json();
-
-      if (json?.status == 0) {
-        throw Error(`Error: ${json?.message || 'unknown error'}`);
-      } else if (json?.status == "captcha") {
-        await this.delay(5000);
-        await this.handleCapcay(id);
-      } else if (json?.status == 1) {
-        return json;
-      }
-
-      await this.delay(this.NEXT_FETCH_WAITING_TIME);
-      fetchCount++;
-    } while (
-      fetchCount < this.MAX_FETCH_ATTEMPT &&
-      (json?.status == "captcha" || json?.status == "3" || json?.length == 0)
-    );
-
-    throw Error(`Max fetch limit exceeded or unknown error. ${json?.message || ''}`);
-  }
-}
+  return result;
+};
 
 Module({
   command: 'song',
   package: 'downloader',
   description: 'Search and download audio from YouTube'
 })(async (message, match) => {
-  if (!match) return message.send('Please provide a song name or YouTube URL.');
+  if (!match) return message.send('Please provide a YouTube URL or query.');
 
-  const isUrl = match.startsWith('http://') || match.startsWith('https://');
-
+  const isUrl = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(match);
   let url = match;
 
   if (!isUrl) {
-    // Query mode: use yt-search to get first result
     const ytsearch = require('yt-search');
     const result = await ytsearch(match);
     const video = result.videos?.[0];
@@ -95,13 +63,11 @@ Module({
     url = video.url;
   }
 
-  const ytmp3 = new YTMP3Downloader();
-
   try {
-    const data = await ytmp3.download(url);
-    await message.send(`🎵 *${data.title}*\n🔗 ${data.download}`);
-    await message.send({ audio: { url: data.download }, mimetype: 'audio/mpeg' });
+    const { title, downloadURL } = await ytmp3mobi(url, 'mp3');
+    await message.send(`🎵 *${title}*\n🔗 ${downloadURL}`);
+    await message.send({ audio: { url: downloadURL }, mimetype: 'audio/mpeg' });
   } catch (e) {
-    await message.send(e.message);
+    await message.send(`❌ ${e.message}`);
   }
 });
