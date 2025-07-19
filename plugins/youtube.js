@@ -22,22 +22,19 @@ Module({
   const meta = new MetadataEditor();
   const fb = await meta.write(result.url, result.thumb, { title: result.title });
   return message.send(
-    { document: fb, fileName: `${result.title}.mp3`, mimetype: 'audio/mpeg' },
-    {},
-    'document'
-  );
+    { document: fb, fileName: `${result.title}.mp3`, mimetype: 'audio/mpeg' },{quoted: message})
 });
 Module({
   command: 'play',
   package: 'downloader',
   description: 'Play music or video from query'
 })(async (message, match) => {
-  if (!match) return await message.reply('_Please provide a search q_');
+  if (!match) return await message.send('_Please provide a search q_');
   const result = await yt(match);
   if (!result.videos.length) return await message.send('nothin');
   const video = result.videos[0];
   const info = await downloadMusicAndVideos(video.url);
-  const caption = `*${info.title}*\n\`\`\`\n◆ 1. Audio\n◆ 2. Document\n◆ 3. Video\n\`\`\`\n\n${video.url}\n\nReply with num`;
+  const caption = `*${info.title}*\n\`\`\`\n◆ 1. *Audio*\n◆ 2. *Document*\n◆ 3. *Video*\n\`\`\`\n\n${video.url}\n\nReply with num`;
   return await message.send({image: { url: info.thumb },caption}, { quoted: message });
 });
 
