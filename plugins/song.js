@@ -1,73 +1,89 @@
-//
 const { Module } = require('../lib/plugins');
-const fetch = require('node-fetch');
-
-const ytmp3mobi = async (youtubeUrl, format = "mp3") => {
-  const regYoutubeId = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/|youtube\.com\/watch\?v=)([^&|^?]+)/;
-  const videoId = youtubeUrl.match(regYoutubeId)?.[2];
-  if (!videoId) throw Error("Can't extract YouTube video ID. Please check your link.");
-
-  const availableFormat = ["mp3", "mp4"];
-  const formatIndex = availableFormat.findIndex(v => v == format.toLowerCase());
-  if (formatIndex == -1) throw Error(`${format} is invalid. Available: ${availableFormat.join(", ")}`);
-
-  const urlParam = {
-    v: videoId,
-    f: format,
-    _: Math.random()
-  };
-
-  const headers = {
-    "Referer": "https://id.ytmp3.mobi/",
-  };
-
-  const fetchJson = async (url, desc) => {
-    const res = await fetch(url, { headers });
-    if (!res.ok) throw Error(`Failed to fetch ${desc} | ${res.status} ${res.statusText}`);
-    return await res.json();
-  };
-
-  const { convertURL } = await fetchJson("https://d.ymcdn.org/api/v1/init?p=y&23=1llum1n471&_=" + Math.random(), "convertURL");
-
-  const { progressURL, downloadURL } = await fetchJson(`${convertURL}&${new URLSearchParams(urlParam).toString()}`, "progress & download URL");
-
-  let result = {};
-  while (true) {
-    const json = await fetchJson(progressURL, "progress status");
-    if (json.error) throw Error(`Error while processing: ${json.error}`);
-    if (json.progress == 3) {
-      result = { title: json.title, downloadURL };
-      break;
-    }
-    await new Promise(r => setTimeout(r, 3000));
-  }
-
-  return result;
-};
+const ytSearch = require('yt-search');
+const axios = require('axios');
+const FormData = require('form-data');
+const cheerio = require('cheerio');
 
 Module({
   command: 'song',
   package: 'downloader',
-  description: 'Search and download audio from YouTube'
+  description: 'Download audio from YouTube by query or URL'
 })(async (message, match) => {
-  if (!match) return message.send('Please provide a YouTube URL or query.');
+  if (!match) return message.send('Provide a YouTube link or search query');
 
-  const isUrl = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//.test(match);
+  const ytRegex = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;
   let url = match;
 
-  if (!isUrl) {
-    const ytsearch = require('yt-search');
-    const result = await ytsearch(match);
-    const video = result.videos?.[0];
-    if (!video) return message.send('No video found for your query.');
-    url = video.url;
+  if (!ytRegex.test(match)) {
+    const res = await ytSearch(match);
+    const vid = res.videos?.[0];
+    if (!vid) return message.send('No results found');
+    url = vid.url;
   }
 
-  try {
-    const { title, downloadURL } = await ytmp3mobi(url, 'mp3');
-    await message.send(`🎵 *${title}*\n🔗 ${downloadURL}`);
-    await message.send({ audio: { url: downloadURL }, mimetype: 'audio/mpeg' });
-  } catch (e) {
-    await message.send(`❌ ${e.message}`);
+  async function downloadMusicAndVideos(u) {
+    const f = new FormData();
+    f.append("url", u);
+    f.append("ajax", "1");
+    f.append("lang", "en");
+
+    try {
+      const r = await axios.post(
+        "https://genyoutube.online/mates/en/analyze/ajax?retry=undefined&platform=youtube",
+        f,
+        { headers: f.getHeaders() }
+      );
+
+      const $ = cheerio.load(r.data.result);
+      const b = $("button").first();
+      const c = b.attr("onclick");
+      if (!c) throw new Error("No onclick");
+
+      const m = c.match(/download\((.*)\)/);
+      if (!m) throw new Error("No match");
+
+      const j = m[1].replace(/'/g, '"');
+      const a = JSON.parse(`[${j}]`);
+      const d = {
+        u: a[0],
+        t: a[1],
+        i: a[2],
+        e: a[3],
+        n: a[5],
+        f: a[6]
+      };
+
+      const x = new FormData();
+      x.append("url", d.u);
+      x.append("title", d.t);
+      x.append("id", d.i);
+      x.append("ext", d.e);
+      x.append("note", d.n);
+      x.append("format", d.f);
+
+      const y = await axios.post(
+        `https://genyoutube.online/mates/en/convert?id=${encodeURIComponent(d.i)}`,
+        x,
+        { headers: x.getHeaders() }
+      );
+
+      return {
+        status: "success",
+        title: d.t,
+        url: y.data.downloadUrlX
+      };
+    } catch (e) {
+      return { status: "error", message: e.message };
+    }
   }
+
+  const r = await downloadMusicAndVideos(url);
+  if (r.status !== 'success') return message.send(r.message);
+
+  await message.send({
+    audio: { url: r.url },
+    mimetype: 'audio/mpeg',
+    fileName: r.title + '.mp3',
+    ptt: false
+  })
 });
