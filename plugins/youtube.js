@@ -5,7 +5,7 @@ const MetadataEditor = require('../lib/Class/metadata');
 
 Module({
   command: 'song',
-  package: 'downloader'
+  package: 'downloader',
   description: 'Download YouTube audio'
 })(async (message, match) => {
   if (!match) return message.send('_yt url nor query_');
