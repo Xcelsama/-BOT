@@ -35,7 +35,7 @@ Module({
   const video = result.videos[0];
   await message.send({
     image: { url: video.thumbnail },
-    caption: `*${video.title}*\n\`\`\`\n◆ 1. *Audio*\n◆ 2. *Document*\n◆ 3. *Video*\n\`\`\`\n\n${video.url}\n\nReply with num`
+    caption: `*${video.title}*\n\`\`\`\n◆ 1. Audio\n◆ 2. Document\n◆ 3. Video\n\`\`\`\n\n${video.url}\n\nReply with num`
   }, { quoted: message });
 });
 
@@ -43,7 +43,7 @@ Module({
   on: 'text'
 })(async (message) => {
   if (!message.quoted) return;
-  if (!message.body.includes('◆')) return;
+  if (!message.quoted.body?.includes('◆')) return;
   const urls = (message.quoted.text || message.quoted.body || '').match(/https?:\/\/[^\s]+/g);
   if (!urls || !urls.length) return;
   const q = message.body.replace('◆', '').trim();
