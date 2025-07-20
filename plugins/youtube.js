@@ -1,7 +1,7 @@
 const { Module } = require('../lib/plugins');
 const MetadataEditor = require('../lib/Class/metadata');
 const ytSearch = require('yt-search');
-const downloadMusicAndVideos = require('../lib/downloadMusicAndVideos');
+const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
 Module({
   command: 'song',
