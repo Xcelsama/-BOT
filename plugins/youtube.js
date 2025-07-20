@@ -1,27 +1,29 @@
 const { Module } = require('../lib/plugins');
-const yts = require('yt-search');
-const { downloadMusicAndVideos } = require('../lib/ytdl-dlp');
 const MetadataEditor = require('../lib/Class/metadata');
+const ytSearch = require('yt-search');
+const downloadMusicAndVideos = require('../lib/downloadMusicAndVideos');
 
 Module({
   command: 'song',
   package: 'downloader',
-  description: 'Download YouTube audio'
+  description: 'Download audio from YouTube by URL or search query'
 })(async (message, match) => {
-  if (!match) return message.send('_yt url nor query_');
-  const reg = /\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&|^?]+)/;
-  let vid;
-  if (reg.test(match)) {
-    vid = match;
-  } else {
-    const search = await yts(match);
-    if (!search?.videos?.length) return message.send('no found');
-    vid = search.videos[0].url;
-  } const result = await downloadMusicAndVideos(vid);
-  if (result.status !== 'success') return message.send('err');
-  const meta = new MetadataEditor();
-  const fb = await meta.write(result.url, result.thumb, { title: result.title });
-  return message.send({ document: fb, fileName: `${result.title}.mp3`, mimetype: 'audio/mpeg' },{quoted: message})
+  if (!match) return message.send('Provide a YouTube link or search query');
+  const reg = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;
+  let u = match;
+  if (!reg.test(match)) {
+    const s = await ytSearch(match);
+    const v = s.videos?.[0];
+    if (!v) return message.send('No results found');
+    u = v.url;
+  }
+
+     const r = await downloadMusicAndVideos(u);
+     if (r.status !== 'success') return message.send(r.message);
+     await message.send({document: { url: r.url },mimetype: 'audio/mpeg',fileName: r.title + '.mp3',contextInfo: {externalAdReply: {title: r.title,body: 'Ytdl-dlp',mediaType: 2,thumbnailUrl: 'https://i.ytimg.com/vi/' + r.url.split('v=')[1]?.substring(0, 11) + '/hqdefault.jpg',mediaUrl: r.url,sourceUrl: r.url,renderLargerThumbnail: false
+     }
+    }
+  }, { quoted: message});
 });
 
 Module({
@@ -30,7 +32,7 @@ Module({
   description: 'Play music or video from query'
 })(async (message, match) => {
   if (!match) return await message.send('_Please provide a search query_');
-  const result = await yts(match);
+  const result = await ytSearch(match);
   if (!result.videos.length) return await message.send('nofound');
   const video = result.videos[0];
   await message.send({
