@@ -1,7 +1,7 @@
 const { Module } = require('../lib/plugins');
-const MetadataEditor = require('../lib/Class/metadata');
 const ytSearch = require('yt-search');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
+const tag = require('../lib/Class/metadata');
 
 Module({
   command: 'song',
@@ -9,24 +9,32 @@ Module({
   description: 'Download audio from YouTube by URL or search query'
 })(async (message, match) => {
   if (!match) return message.send('Provide a YouTube link or search query');
-  const reg = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;
+  const r = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;
   let u = match;
-  if (!reg.test(match)) {
-    const s = await ytSearch(match);
-    const v = s.videos?.[0];
-    if (!v) return message.send('No results found');
-    u = v.url;
+  let x;
+  if (!r.test(match)) {
+    const s = await ytSeach(match);
+    x = s.videos?.[0];
+    if (!x) return message.send('nfound');
+    u = x.url;
   }
 
-     const r = await downloadMusicAndVideos(u);
-     if (r.status !== 'success') return message.send(r.message);
-     await message.send({document: { url: r.url },mimetype: 'audio/mpeg',fileName: r.title + '.mp3',contextInfo: {externalAdReply: {title: r.title,body: 'Ytdl-dlp',mediaType: 2,thumbnailUrl: 'https://i.ytimg.com/vi/' + r.url.split('v=')[1]?.substring(0, 11) + '/hqdefault.jpg',mediaUrl: r.url,sourceUrl: r.url,renderLargerThumbnail: false
-     }
+  const d = await downloadMusicAndVideos(u);
+  if (d.status !== 'success') return message.send(d.message);
+  const id = x?.videoId || (u.match(/([0-9A-Za-z_-]{11})/) || [])[1];
+  const a = d.url;
+  const t = d.title;
+  const n = x?.author.name;
+  const { buffer, thumbUrl } = await tag(a, t, n, id);
+  await message.send({document: buffer,mimetype: 'audio/mpeg',
+    fileName: t + '.mp3',
+    contextInfo: {externalAdReply: {title: t,body: 'Audio',mediaType: 2,thumbnailUrl: thumbUrl,mediaUrl: a,sourceUrl: a,renderLargerThumbnail: false
+      }
     }
-  }, { quoted: message});
+  }, { quoted: message });
 });
 
-Module({
+/*Module({
   command: 'play',
   package: 'downloader',
   description: 'Play music or video from query'
@@ -73,3 +81,4 @@ Module({
     }, { quoted: message });
   }
 });
+*/
