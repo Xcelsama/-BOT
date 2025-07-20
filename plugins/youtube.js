@@ -13,7 +13,7 @@ Module({
   let u = match;
   let x;
   if (!r.test(match)) {
-    const s = await ytSeach(match);
+    const s = await ytSearch(match);
     x = s.videos?.[0];
     if (!x) return message.send('nfound');
     u = x.url;
