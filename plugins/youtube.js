@@ -1,20 +1,16 @@
-const { Module } = require('../lib/plugins');
 const axios = require('axios');
 const ID3 = require('node-id3');
-const yts = require('yt-search');
+const ytSearch = require('yt-search');
+const { Module } = require('../lib/plugins');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
-Module({ command: 'song', package: 'downloader', description: 'Download audio' })(async (message, match) => {
-  if (!match) return message.send('Provide a YouTube link or search query');
-  const r = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)/.test(match) ? match : (await yts(match)).videos?.[0]?.url;
-  if (!r) return message.send('nfound');
-  const x = await downloadMusicAndVideos(r); if (x.status !== 'success') return message.send(x.message);
-  const a = Buffer.from((await axios.get(x.url, { responseType: 'arraybuffer' })).data);
-  const t = x.url.split('v=')[1]?.slice(0, 11);
-  const i = Buffer.from((await axios.get(`https://i.ytimg.com/vi/${t}/hqdefault.jpg`, { responseType: 'arraybuffer' })).data);
-  const meta = ID3.write({ title: x.title, artist: x.author, album: 'Audio', comment: { text: 'Garfield' }, image: { mime: 'image/jpeg', type: { id: 3, name: 'front cover' }, imageBuffer: i } }, a);
-  await message.send({ document: meta, mimetype: 'audio/mpeg', fileName: `${x.title}.mp3`, contextInfo: { externalAdReply: { title: x.title, body: x.author, mediaType: 2, thumbnailUrl: `https://i.ytimg.com/vi/${t}/hqdefault.jpg`, mediaUrl: 'www.tubidy.mobi', sourceUrl: 'www.tubidy.mobi', renderLargerThumbnail: false } } }, { quoted: message});
-});
+const getVid = u => u.match(/(?:v=|youtu\.be\/|\/shorts\/)([\w-]{11})/)?.[1]||null;
+Module({command:'song',package:'downloader',description:'Download audio'})(async(message,match)=>{ 
+if(!match) return message.send('Provide a link or query'); let url=match; if(!/(youtu\.be|youtube\.com)/.test(match)){ 
+const s = await ytSearch(match); const v = s.videos?.[0]; if(!v)return message.send('nothin'); url=v.url;}
+const s = await ytSearch(url),v=s.videos?.[0]||{},vid=v.videoId||getVid(url);if(!vid)return message.send('invalid id_'); const r=await downloadMusicAndVideos(url);if(r.status!=='success')return message.send(r.message);
+const audio=Buffer.from((await axios.get(r.url,{responseType:'arraybuffer'})).data);const img=Buffer.from((await axios.get(`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,{responseType:'arraybuffer'})).data);const out=ID3.write({title:r.title,artist:v.author?.name||'garfield',album:'Audio',image:{mime:'image/jpeg',type:{id:3,name:'cover'},imageBuffer:img}},audio);
+await message.send({audio:out,mimetype:'audio/mpeg',fileName:r.title+'.mp3',contextInfo:{externalAdReply:{title:r.title,body:v.author?.name||'garfield',mediaType:2,thumbnailUrl:`https://i.ytimg.com/vi/${vid}/hqdefault.jpg`,mediaUrl:'www.tubidy.mobi',sourceUrl:'www.tubidy.mobi',renderLargerThumbnail:false}}},{quoted:message});});
 
 /*Module({
   command: 'play',
