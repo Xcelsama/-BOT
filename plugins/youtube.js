@@ -1,7 +1,7 @@
 const { Module } = require('../lib/plugins');
 const ytSearch = require('yt-search');
 const axios = require('axios');
-const ID3Writer = require('browser-id3-writer').default;
+const {ID3Writer} = require('browser-id3-writer');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
 Module({
