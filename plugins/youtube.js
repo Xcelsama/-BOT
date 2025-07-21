@@ -1,7 +1,8 @@
+//
 const { Module } = require('../lib/plugins');
 const ytSearch = require('yt-search');
 const axios = require('axios');
-const {ID3Writer} = require('browser-id3-writer');
+const ID3 = require('node-id3');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
 Module({
@@ -37,12 +38,21 @@ Module({
   const audio = (await axios.get(r.url, { responseType: 'arraybuffer' })).data;
   const thumb = (await axios.get(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, { responseType: 'arraybuffer' })).data;
 
-  const writer = new ID3Writer(audio);
-  writer.setFrame('TIT2', title)
-        .setFrame('TPE1', [author])
-        .setFrame('APIC', { type: 3, data: thumb, description: 'Cover' })
-        .addTag();
-  const tagged = Buffer.from(writer.arrayBuffer);
+  const tags = {
+    title,
+    artist: author,
+    APIC: {
+      mime: 'image/jpeg',
+      type: {
+        id: 3,
+        name: 'front cover'
+      },
+      description: 'cover',
+      imageBuffer: thumb
+    }
+  };
+
+  const tagged = ID3.write(tags, Buffer.from(audio));
 
   return await message.send({
     document: tagged,
@@ -61,6 +71,7 @@ Module({
     }
   }, { quoted: message });
 });
+
 /*Module({
   command: 'play',
   package: 'downloader',
