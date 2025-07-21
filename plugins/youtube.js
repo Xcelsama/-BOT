@@ -2,7 +2,7 @@ const { Module } = require('../lib/plugins');
 const axios = require('axios');
 const ID3 = require('node-id3');
 const yts = require('yt-search');
-const downloadMusicAndVideos = require('../lib/downloadMusicAndVideos');
+const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
 Module({ command: 'song', package: 'downloader', description: 'Download audio' })(async (message, match) => {
   if (!match) return message.send('Provide a YouTube link or search query');
