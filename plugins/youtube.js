@@ -1,76 +1,32 @@
-//
 const { Module } = require('../lib/plugins');
 const ytSearch = require('yt-search');
 const axios = require('axios');
-const ID3 = require('node-id3');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
-Module({
-  command: 'song',
-  package: 'downloader'
-})(async (message, match) => {
-  if (!match) return message.send('Send a song name or YouTube link');
-
-  const ytMatch = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^\s&]+)/.exec(match);
-  let u = match, title = '', author = '', id = '';
-
-  if (!ytMatch) {
-    const s = await ytSearch(match);
-    const v = s.videos?.[0];
-    if (!v) return message.send('Not found');
-    u = v.url;
-    title = v.title;
-    author = v.author.name;
-    id = v.videoId;
-  } else {
-    id = ytMatch[1];
-    const s = await ytSearch({ videoId: id });
-    const v = s.videos?.[0];
-    if (v) {
-      title = v.title;
-      author = v.author.name;
-    }
-  }
-
-  const r = await downloadMusicAndVideos(u);
-  if (!r || r.status !== 'success') return message.send('Download failed');
-
-  const audio = (await axios.get(r.url, { responseType: 'arraybuffer' })).data;
-  const thumb = (await axios.get(`https://i.ytimg.com/vi/${id}/hqdefault.jpg`, { responseType: 'arraybuffer' })).data;
-
-  const tags = {
-    title,
-    artist: author,
-    APIC: {
-      mime: 'image/jpeg',
-      type: {
-        id: 3,
-        name: 'front cover'
-      },
-      description: 'cover',
-      imageBuffer: thumb
-    }
-  };
-
-  const tagged = ID3.write(tags, Buffer.from(audio));
-
-  return await message.send({
-    document: tagged,
-    mimetype: 'audio/mpeg',
-    fileName: title + '.mp3',
-    contextInfo: {
-      externalAdReply: {
-        title,
-        body: author,
-        mediaType: 2,
-        thumbnailUrl: `https://i.ytimg.com/vi/${id}/hqdefault.jpg`,
-        mediaUrl: 'https://tubidy.mobi',
-        sourceUrl: 'https://tubidy.mobi',
-        renderLargerThumbnail: false
-      }
-    }
-  }, { quoted: message });
+ 
+Module({    
+  command: 'song',    
+  package: 'downloader',    
+  description: 'Download audio from YouTube by URL or search query'    
+})(async (message, match) => {    
+  if (!match) return message.send('Provide a YouTube link or search query');    
+  const reg = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;    
+  let u = match;    
+  if (!reg.test(match)) {    
+    const s = await ytSearch(match);    
+    const v = s.videos?.[0];    
+    if (!v) return message.send('No results found');    
+    u = v.url;    
+  }    
+    
+     const r = await downloadMusicAndVideos(u);    
+     if (r.status !== 'success') return message.send(r.message);    
+     await message.send({document: { url: r.url },mimetype: 'audio/mpeg',fileName: r.title + '.mp3',contextInfo: {externalAdReply: {title: r.title,body: 'Ytdl-dlp',mediaType: 2,thumbnailUrl: 'https://i.ytimg.com/vi/' + r.url.split('v=')[1]?.substring(0, 11) + '/hqdefault.jpg',mediaUrl: r.url,sourceUrl: r.url,renderLargerThumbnail: false    
+     }    
+    }    
+  }, { quoted: message});    
 });
+    
 
 /*Module({
   command: 'play',
