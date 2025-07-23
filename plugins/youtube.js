@@ -3,7 +3,32 @@ const ytSearch = require('yt-search');
 const axios = require('axios');
 const downloadMusicAndVideos = require('../lib/ytdl-dlp');
 
- 
+const Ytmp = require('./yt')
+
+Module({
+  command: 'song',
+  package: 'downloader'
+})(async (message, match) => {
+  if (!match) return message.send('Send a song name or YouTube url')
+
+  const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i
+  const x = ytRegex.test(match)
+    ? match
+    : (await (await import('yt-search')).default(match)).videos?.[0]?.url
+
+  if (!x) return message.send('Not found')
+
+  await message.send('Downloading...')
+
+  const r = await Ytmp.get(x, 'mp3')
+
+  await message.send({
+    document: { url: r.url },
+    mimetype: 'audio/mp3',
+    fileName: r.title + '.mp3'
+  })
+})
+ /*
 Module({    
   command: 'song',    
   package: 'downloader',    
@@ -26,7 +51,7 @@ Module({
     }    
   }, { quoted: message});    
 });
-    
+   */ 
 
 /*Module({
   command: 'play',
