@@ -1,8 +1,9 @@
+const { Module } = require('../lib/plugins');
 const axios = require("axios");
 const FormData = require("form-data");
 const cheerio = require("cheerio");
 const yts = require("yt-search");
-const { Module } = require('../lib/plugins');
+const ID3 = require("node-id3");
 
 async function ytGrab(u) {
   const f = new FormData();
@@ -66,30 +67,47 @@ Module({
   description: 'downloading audio'
 })(async (message, match) => {
   if (!match) return await message.send('_Please provide a YouTube link or search query_');
-  await message.send('_Searching YouTube..._');
-  let videoUrl = match;
+  const m1 = await message.send('_Searching YouTube..._');
+  let u = match;
+  let s = null;
+  let artist = 'garfield';
   if (!match.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//)) {
-    const searchResult = await yts(match);
-    if (!searchResult || !searchResult.videos.length)
-      return await message.send('_No videos found for your query._');
-    videoUrl = searchResult.videos[0].url;
+    s = await yts(match);
+    if (!s || !s.videos.length) return await message.send('_No videos found._');
+    u = s.videos[0].url;
+    const t = s.videos[0].title.split(' - ');
+    artist = t.length > 1 ? t[0].trim() : s.videos[0].author.name;
   }
 
-  await message.send('_Downloading audio..._');
-  const result = await ytGrab(videoUrl);
-  if (result.status === "error") {
-    return await message.send(`Error: ${result.message}`);
-  }
+  const r = await ytGrab(u);
+  if (r.status === "error") return await message.send(`Error: ${r.message}`, { edit: m1.key });
+  await message.send(`_Downloading: ${r.title}_`, { edit: m1.key });
+    const a = await axios.get(r.url, { responseType: 'arraybuffer' });
+    const b = Buffer.from(a.data);
+    const id = u.split("v=")[1]?.split("&")[0];
+    const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+    let cover = null;
+    const t = await axios.get(thumb, { responseType: 'arraybuffer' });
+    cover = Buffer.from(t.data);
+    const tags = {
+      title: r.title,
+      artist: artist,
+      album: 'YouTube Downloads',
+      APIC: cover
+        ? {
+            mime: 'image/jpeg',
+            type: { id: 3, name: 'front cover' },
+            description: 'thumbnail',
+            imageBuffer: cover
+          }
+        : undefined
+    };
 
-  try {
-    const audioResp = await axios.get(result.url, { responseType: 'arraybuffer' });
-    const audioBuffer = Buffer.from(audioResp.data);
+    const tagged = ID3.write(tags, b);
     await message.send({
-      audio: audioBuffer,
+      document: tagged,
       mimetype: 'audio/mpeg',
-      fileName: `${result.title}.mp3`
+      fileName: `${r.title}.mp3`
     });
-  } catch (e) {
-    await message.send(`Failed to download or send audio: ${e.message}`);
-  }
+
 });
