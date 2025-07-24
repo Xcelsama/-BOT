@@ -1,103 +1,94 @@
-const { Module } = require('../lib/plugins');
-const ytSearch = require('yt-search');
-const axios = require('axios');
-const downloadMusicAndVideos = require('../lib/ytdl-dlp');
+const axios = require("axios");
+const FormData = require("form-data");
+const cheerio = require("cheerio");
+const yts = require("yt-search");
 
-const Ytmp = require('./yt')
+async function ytGrab(u) {
+  const f = new FormData();
+  f.append("url", u);
+  f.append("ajax", "1");
+  f.append("lang", "en");
+
+  try {
+    const x = await axios.post(
+      "https://genyoutube.online/mates/en/analyze/ajax?retry=undefined&platform=youtube",
+      f,
+      { headers: f.getHeaders() }
+    );
+
+    const $ = cheerio.load(x.data.result);
+    const b = $("button").first();
+    const o = b.attr("onclick");
+    if (!o) throw new Error("No onclick found");
+
+    const m = o.match(/download\((.*)\)/);
+    if (!m) throw new Error("Pattern not matched");
+
+    let j = m[1].replace(/'/g, '"');
+    const a = JSON.parse(`[${j}]`);
+    const d = {
+      url: a[0],
+      title: a[1],
+      id: a[2],
+      ext: a[3],
+      note: a[5],
+      format: a[6]
+    };
+
+    const fm = new FormData();
+    fm.append("url", d.url);
+    fm.append("title", d.title);
+    fm.append("id", d.id);
+    fm.append("ext", d.ext);
+    fm.append("note", d.note);
+    fm.append("format", d.format);
+
+    const y = await axios.post(
+      `https://genyoutube.online/mates/en/convert?id=${encodeURIComponent(d.id)}`,
+      fm,
+      { headers: fm.getHeaders() }
+    );
+
+    return {
+      status: "success",
+      title: d.title,
+      url: y.data.downloadUrlX
+    };
+  } catch (e) {
+    return { status: "error", message: e.message };
+  }
+}
 
 Module({
   command: 'song',
-  package: 'downloader'
-})(async (message, match) => {
-  if (!match) return message.send('Send a song name or YouTube url')
-
-  const ytRegex = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/i
-  const x = ytRegex.test(match)
-    ? match
-    : (await (await import('yt-search')).default(match)).videos?.[0]?.url
-
-  if (!x) return message.send('Not found')
-
-  await message.send('Downloading...')
-
-  const r = await Ytmp.get(x, 'mp3')
-
-  await message.send({
-    document: { url: r.url },
-    mimetype: 'audio/mp3',
-    fileName: r.title + '.mp3'
-  })
-})
- /*
-Module({    
-  command: 'song',    
-  package: 'downloader',    
-  description: 'Download audio from YouTube by URL or search query'    
-})(async (message, match) => {    
-  if (!match) return message.send('Provide a YouTube link or search query');    
-  const reg = /https:\/\/(www\.youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/shorts\/)([^&\s]+)/;    
-  let u = match;    
-  if (!reg.test(match)) {    
-    const s = await ytSearch(match);    
-    const v = s.videos?.[0];    
-    if (!v) return message.send('No results found');    
-    u = v.url;    
-  }    
-    
-     const r = await downloadMusicAndVideos(u);    
-     if (r.status !== 'success') return message.send(r.message);    
-     await message.send({document: { url: r.url },mimetype: 'audio/mpeg',fileName: r.title + '.mp3',contextInfo: {externalAdReply: {title: r.title,body: 'Ytdl-dlp',mediaType: 2,thumbnailUrl: 'https://i.ytimg.com/vi/' + r.url.split('v=')[1]?.substring(0, 11) + '/hqdefault.jpg',mediaUrl: r.url,sourceUrl: r.url,renderLargerThumbnail: false    
-     }    
-    }    
-  }, { quoted: message});    
-});
-   */ 
-
-/*Module({
-  command: 'play',
   package: 'downloader',
-  description: 'Play music or video from query'
+  description: 'downloading audio'
 })(async (message, match) => {
-  if (!match) return await message.send('_Please provide a search query_');
-  const result = await ytSearch(match);
-  if (!result.videos.length) return await message.send('nofound');
-  const video = result.videos[0];
-  await message.send({
-    image: { url: video.thumbnail },
-    caption: `*${video.title}*\n\`\`\`\n◆ 1. Audio\n◆ 2. Document\n◆ 3. Video\n\`\`\`\n\n${video.url}\n\nReply with num`
-  }, { quoted: message });
-});
+  if (!match) return await message.send('_Please provide a YouTube link or search query_');
+  await message.send('_Searching YouTube..._');
+  let videoUrl = match;
+  if (!match.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//)) {
+    const searchResult = await yts(match);
+    if (!searchResult || !searchResult.videos.length)
+      return await message.send('_No videos found for your query._');
+    videoUrl = searchResult.videos[0].url;
+  }
 
-Module({
-  on: 'text'
-})(async (message) => {
-  if (!message.quoted) return;
-  if (!message.quoted.body?.includes('◆')) return;
-  const urls = (message.quoted.text || message.quoted.body || '').match(/https?:\/\/[^\s]+/g);
-  if (!urls || !urls.length) return;
-  const q = message.body.replace('◆', '').trim();
-  const url = urls[0];
-  const info = await downloadMusicAndVideos(url);
-  if (q === '1' || q === '2') {
-    const meta = new MetadataEditor();
-    const mp = await meta.write(info.url, info.thumb, { title: info.title });
-    if (q === '1') {
-      return await message.send({ audio: mp, mimetype: 'audio/mpeg' }, { quoted: message });
-    }
-    if (q === '2') {
-      return await message.send({
-        document: mp,
-        mimetype: 'audio/mpeg',
-        fileName: `${info.title}.mp3`
-      }, { quoted: message });
-    }
+  await message.send('_Downloading audio..._');
+  const result = await ytGrab(videoUrl);
+  if (result.status === "error") {
+    return await message.send(`Error: ${result.message}`);
   }
-  if (q === '3') {
-    return await message.send({
-      video: { url: info.url },
-      mimetype: 'video/mp4',
-      caption: info.title
-    }, { quoted: message });
+
+  try {
+    const audioResp = await axios.get(result.url, { responseType: 'arraybuffer' });
+    const audioBuffer = Buffer.from(audioResp.data);
+    await message.send({
+      audio: audioBuffer,
+      mimetype: 'audio/mpeg',
+      fileName: `${result.title}.mp3`
+    });
+  } catch (e) {
+    await message.send(`Failed to download or send audio: ${e.message}`);
   }
 });
-*/
