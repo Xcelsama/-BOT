@@ -2,6 +2,7 @@ const axios = require("axios");
 const FormData = require("form-data");
 const cheerio = require("cheerio");
 const yts = require("yt-search");
+const { Module } = require('../lib/plugins');
 
 async function ytGrab(u) {
   const f = new FormData();
