@@ -1,4 +1,4 @@
-const { Module } = require('../lib/plugins');
+const { Module} = require('../lib/plugins');
 const axios = require("axios");
 const FormData = require("form-data");
 const cheerio = require("cheerio");
@@ -67,33 +67,45 @@ Module({
   description: 'downloading audio'
 })(async (message, match) => {
   if (!match) return await message.send('_Please provide a YouTube link or search query_');
+
   const m1 = await message.send('_Searching YouTube..._');
+
   let u = match;
   let s = null;
-  let artist = 'garfield';
+  let artist = 'Unknown Artist';
+
   if (!match.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//)) {
     s = await yts(match);
     if (!s || !s.videos.length) return await message.send('_No videos found._');
     u = s.videos[0].url;
+
     const t = s.videos[0].title.split(' - ');
     artist = t.length > 1 ? t[0].trim() : s.videos[0].author.name;
   }
 
   const r = await ytGrab(u);
   if (r.status === "error") return await message.send(`Error: ${r.message}`, { edit: m1.key });
+
   await message.send(`_Downloading: ${r.title}_`, { edit: m1.key });
+
+  try {
     const a = await axios.get(r.url, { responseType: 'arraybuffer' });
     const b = Buffer.from(a.data);
+
     const id = u.split("v=")[1]?.split("&")[0];
     const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
+
     let cover = null;
-    const t = await axios.get(thumb, { responseType: 'arraybuffer' });
-    cover = Buffer.from(t.data);
+    try {
+      const t = await axios.get(thumb, { responseType: 'arraybuffer' });
+      cover = Buffer.from(t.data);
+    } catch {}
+
     const tags = {
       title: r.title,
       artist: artist,
       album: 'YouTube Downloads',
-      APIC: cover
+      image: cover
         ? {
             mime: 'image/jpeg',
             type: { id: 3, name: 'front cover' },
@@ -104,10 +116,13 @@ Module({
     };
 
     const tagged = ID3.write(tags, b);
+
     await message.send({
       document: tagged,
       mimetype: 'audio/mpeg',
       fileName: `${r.title}.mp3`
     });
-
+  } catch (e) {
+    await message.send(`Download/send failed: ${e.message}`);
+  }
 });
