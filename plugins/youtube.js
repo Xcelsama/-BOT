@@ -49,11 +49,11 @@ Module({
 
 Module({ on: 'text' })(async (message) => {
   if (!message.quoted) return;
-  if (!message.body.includes('◆')) return;
   const urls = (message.quoted.text || message.quoted.body || '').match(/https?:\/\/[^\s]+/g);
   if (!urls || !urls.length) return;
   const url = urls[0];
-  const q = message.body.replace('◆', '').trim();
+  const q = message.body.replace(/[^1-3]/g, '').trim();
+  if (!['1', '2', '3'].includes(q)) return;
   const id = url.includes('v=') ? url.split('v=')[1] : url.split('/').pop();
   const result = await yts({ videoId: id });
   if (!result) return;
