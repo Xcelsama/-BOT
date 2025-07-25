@@ -35,32 +35,37 @@ Module({
   if (!match) return await message.send('_Please provide a search query_');
   const result = await yts(match);
   if (!result || !result.videos.length) return await message.send('_nofound_');
-  const video = result.videos[0];
-  const id = video.videoId;
-  const thumb = (await axios.get(video.thumbnail, { responseType: 'arraybuffer' })).data;
-  await message.send(`🔢*Reply with number:*\n\`\`\`\n◆ 1. Audio\n◆ 2. Document\n◆ 3. Video\n\`\`\`\n*${video.title}*`,{quoted: message,contextInfo: {externalAdReply: {title: id,mediaUrl: video.url,mediaType: 1,renderLargerThumbnail: true,thumbnail: Buffer.from(thumb)
-  }}}
-  );
+  const v = result.videos[0];
+  const thumb = (await axios.get(v.thumbnail, { responseType: 'arraybuffer' })).data;
+  await message.send(
+    {image: Buffer.from(thumb),caption: `*${v.title}*\n\n*🔢Reply with number:*\n\`\`\`\n◆ 1. Audio\n◆ 2. Document\n◆ 3. Video\n\`\`\``,contextInfo: {
+        externalAdReply: {
+          title: v.title,body: '',mediaType: 1,mediaUrl: v.url,renderLargerThumbnail: true,
+          thumbnail: Buffer.from(thumb)
+        }}
+    },
+    { quoted: message });
 });
 
 Module({ on: 'text' })(async (message) => {
-  if (!message.quoted || !message.quoted.message?.extendedTextMessage) return;
-  const info = message.quoted.message.extendedTextMessage.contextInfo?.externalAdReply;
-  if (!info?.title) return;
-  const id = info.title;
-  const result = await yts({ videoId: id });
+  if (!message.quoted) return;
+  if (!message.body.includes('◆')) return;
+  const urls = (message.quoted.text || message.quoted.body || '').match(/https?:\/\/[^\s]+/g);
+  if (!urls || !urls.length) return;
+  const url = urls[0];
+  const q = message.body.replace('◆', '').trim();
+  const result = await yts({ videoId: url.split('v=')[1] || url.split('/').pop() });
   if (!result) return;
   const title = result.title;
-  const x = message.body.replace(/[^1-3]/g, '').trim();
-  if (!['1', '2', '3'].includes(x)) return;
-  const file = await (x === '3' ? DownloadVideo : DownloadMusic)(id);
+  const id = result.videoId;
+  const file = await (q === '3' ? DownloadVideo : DownloadMusic)(id);
   const buffer = fs.readFileSync(file);
   const size = (fs.statSync(file).size / 1024 / 1024).toFixed(2);
-  if (x === '1') {
+  if (q === '1') {
   await message.send({ audio: buffer, mimetype: 'audio/mpeg', fileName: `${title}.mp3` });
-  } else if (x === '2') {
+  } else if (q === '2') {
   await message.send({ document: buffer, mimetype: 'audio/mpeg', fileName: `${title}.mp3` });
-  } else if (x === '3') {
+  } else if (q === '3') {
   await message.send({video: buffer,mimetype: 'video/mp4',fileName: `${title}.mp4`,caption: `*${title}*\n*${size} MB*\n*${id}*`});}
   fs.unlinkSync(file);
 });
