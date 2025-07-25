@@ -72,8 +72,7 @@ Module({
 
   let u = match;
   let s = null;
-  let artist = 'Unknown Artist';
-
+  let artist = 'garfield';
   if (!match.match(/^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//)) {
     s = await yts(match);
     if (!s || !s.videos.length) return await message.send('_No videos found._');
@@ -101,22 +100,21 @@ Module({
       cover = Buffer.from(t.data);
     } catch {}
 
-    const tags = {
-      title: r.title,
-      artist: artist,
-      album: 'YouTube Downloads',
-      image: cover
-        ? {
-            mime: 'image/jpeg',
-            type: { id: 3, name: 'front cover' },
-            description: 'thumbnail',
-            imageBuffer: cover
-          }
-        : undefined
-    };
+  const tags = {
+  title: r.title,
+  artist: artist,
+  album: 'Vevo',
+  APIC: cover
+    ? {
+        mime: 'image/jpeg',
+        type: { id: 3, name: 'front cover' },
+        description: 'thumbnail',
+        imageBuffer: cover
+      }
+    : undefined
+};
 
-    const tagged = ID3.write(tags, b);
-
+const tagged = ID3.update(tags, Buffer.from(b));
     await message.send({
       document: tagged,
       mimetype: 'audio/mpeg',
