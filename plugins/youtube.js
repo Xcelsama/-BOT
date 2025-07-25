@@ -67,9 +67,7 @@ Module({
   description: 'downloading audio'
 })(async (message, match) => {
   if (!match) return await message.send('_Please provide a YouTube link or search query_');
-
   const m1 = await message.send('_Searching YouTube..._');
-
   let u = match;
   let s = null;
   let artist = 'garfield';
@@ -77,29 +75,22 @@ Module({
     s = await yts(match);
     if (!s || !s.videos.length) return await message.send('_No videos found._');
     u = s.videos[0].url;
-
     const t = s.videos[0].title.split(' - ');
     artist = t.length > 1 ? t[0].trim() : s.videos[0].author.name;
   }
 
   const r = await ytGrab(u);
   if (r.status === "error") return await message.send(`Error: ${r.message}`, { edit: m1.key });
-
   await message.send(`_Downloading: ${r.title}_`, { edit: m1.key });
-
-  try {
     const a = await axios.get(r.url, { responseType: 'arraybuffer' });
     const b = Buffer.from(a.data);
-
     const id = u.split("v=")[1]?.split("&")[0];
     const thumb = `https://i.ytimg.com/vi/${id}/hqdefault.jpg`;
-
     let cover = null;
     try {
       const t = await axios.get(thumb, { responseType: 'arraybuffer' });
       cover = Buffer.from(t.data);
     } catch {}
-
   const tags = {
   title: r.title,
   artist: artist,
@@ -119,8 +110,23 @@ const tagged = ID3.update(tags, Buffer.from(b));
       document: tagged,
       mimetype: 'audio/mpeg',
       fileName: `${r.title}.mp3`
-    });
-  } catch (e) {
-    await message.send(`Download/send failed: ${e.message}`);
-  }
+      })
 });
+
+Module({
+  command: 'ytmp4',
+  package: 'downloader',
+  description: 'download video as mp4'
+})(async (message, match) => {
+  if (!match || !match.includes("youtube.com") && !match.includes("youtu.be"))
+  return await message.send('_Please provide a valid yt link_');
+  const m1 = await message.send('_Processing..._');
+  const r = await ytGrab(match);
+  if (r.status === "error") return await message.send(`${r.message}`, { edit: m1.key });
+  const a = await axios.get(r.url, { responseType: 'arraybuffer' });
+  const v = Buffer.from(a.data);
+  await message.send({video: v,mimetype: 'video/mp4',fileName: `${r.title}.mp4`,caption: `*${r.title}*` },{ quoted: message }
+    );
+});
+
+      
