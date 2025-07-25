@@ -54,11 +54,13 @@ Module({ on: 'text' })(async (message) => {
   if (!urls || !urls.length) return;
   const url = urls[0];
   const q = message.body.replace('◆', '').trim();
-  const result = await yts({ videoId: url.split('v=')[1] || url.split('/').pop() });
+  const id = url.includes('v=') ? url.split('v=')[1] : url.split('/').pop();
+  const result = await yts({ videoId: id });
   if (!result) return;
   const title = result.title;
-  const id = result.videoId;
-  const file = await (q === '3' ? DownloadVideo : DownloadMusic)(id);
+  let file;
+  if (q === '3') file = await DownloadVideo(id);
+  else file = await DownloadMusic(id);
   const buffer = fs.readFileSync(file);
   const size = (fs.statSync(file).size / 1024 / 1024).toFixed(2);
   if (q === '1') {
@@ -66,6 +68,6 @@ Module({ on: 'text' })(async (message) => {
   } else if (q === '2') {
   await message.send({ document: buffer, mimetype: 'audio/mpeg', fileName: `${title}.mp3` });
   } else if (q === '3') {
-  await message.send({video: buffer,mimetype: 'video/mp4',fileName: `${title}.mp4`,caption: `*${title}*\n*${size} MB*\n*${id}*`});}
+  await message.send({ video: buffer, mimetype: 'video/mp4', fileName: `${title}.mp4`, caption: `*${title}*\n*${size} MB*\n*${id}*` });}
   fs.unlinkSync(file);
 });
